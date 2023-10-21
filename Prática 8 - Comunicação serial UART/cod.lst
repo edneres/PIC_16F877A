@@ -1,0 +1,319 @@
+CCS PCM C Compiler, Version 5.007, 61971               29-jul-23 14:50
+
+               Filename:   C:\Users\edyne\OneDrive\Área de Trabalho\UFPI\Programação\2 - UFPI\6 - Lab de Micro\Prática 8 - Comunicação serial UART\cod.lst
+
+               ROM used:   197 words (2%)
+                           Largest free fragment is 2048
+               RAM used:   20 (6%) at main() level
+                           20 (6%) worst case
+               Stack used: 1 locations (0 in main + 1 for interrupts)
+               Stack size: 7
+
+*
+0000:  NOP
+0001:  MOVLW  00
+0002:  MOVWF  0A
+0003:  GOTO   07A
+0004:  MOVWF  7F
+0005:  SWAPF  03,W
+0006:  CLRF   03
+0007:  MOVWF  21
+0008:  MOVF   0A,W
+0009:  MOVWF  20
+000A:  CLRF   0A
+000B:  MOVF   04,W
+000C:  MOVWF  22
+000D:  MOVF   77,W
+000E:  MOVWF  23
+000F:  MOVF   78,W
+0010:  MOVWF  24
+0011:  MOVF   79,W
+0012:  MOVWF  25
+0013:  MOVF   7A,W
+0014:  MOVWF  26
+0015:  BCF    03.7
+0016:  BCF    03.5
+0017:  BTFSS  0B.5
+0018:  GOTO   01B
+0019:  BTFSC  0B.2
+001A:  GOTO   02C
+001B:  MOVF   22,W
+001C:  MOVWF  04
+001D:  MOVF   23,W
+001E:  MOVWF  77
+001F:  MOVF   24,W
+0020:  MOVWF  78
+0021:  MOVF   25,W
+0022:  MOVWF  79
+0023:  MOVF   26,W
+0024:  MOVWF  7A
+0025:  MOVF   20,W
+0026:  MOVWF  0A
+0027:  SWAPF  21,W
+0028:  MOVWF  03
+0029:  SWAPF  7F,F
+002A:  SWAPF  7F,W
+002B:  RETFIE
+002C:  BCF    0A.3
+002D:  BCF    0A.4
+002E:  GOTO   02F
+.................... #include <16F877A.h> 
+.................... //////// Standard Header file for the PIC16F877A device //////////////// 
+.................... #device PIC16F877A 
+....................  
+.................... #list 
+....................  
+.................... #include "registradores16F.h" 
+.................... // DEFS_877  
+.................... //  
+.................... // Standard definitions for PIC16F877  
+.................... //  
+.................... // Copyright, Peter H. Anderson, Baltimore, MD, June, '99  
+....................   
+.................... //#define byte int  
+....................  
+.................... //#byte PORTD = 0x08 
+.................... //#bit INTF = 0xb.1 
+....................  
+.................... /* 
+.................... 	Alterado por Maria Edivânia Neres de Sousa, acadêmica de Engenharia Elétrica na UFPI. 
+.................... 	25/05/2022, Teresina - PI. 
+.................... */ 
+....................  
+.................... #list  
+....................  
+....................  
+.................... #include "Pisca_Alerta.h" 
+.................... void config_timer0() 
+.................... { 
+.................... 	setup_timer_0(RTCC_INTERNAL|RTCC_DIV_256); 
+*
+0053:  BSF    03.5
+0054:  MOVF   01,W
+0055:  ANDLW  C0
+0056:  IORLW  07
+0057:  MOVWF  01
+.................... 	enable_interrupts(INT_TIMER0); 
+0058:  BCF    03.5
+0059:  BSF    0B.5
+.................... } 
+....................  
+.................... int estouro = 0; 
+....................  
+.................... #int_timer0 
+.................... void Pisca_Alerta() 
+.................... {	 
+.................... 	estouro++; 
+*
+002F:  INCF   28,F
+.................... 	 
+.................... 	if(estouro == 8) 
+0030:  MOVF   28,W
+0031:  SUBLW  08
+0032:  BTFSS  03.2
+0033:  GOTO   03B
+.................... 	{ 
+.................... 		output_toggle(PIN_D1); 
+0034:  BSF    03.5
+0035:  BCF    08.1
+0036:  MOVLW  02
+0037:  BCF    03.5
+0038:  XORWF  08,F
+.................... 		set_timer0(0); 
+0039:  CLRF   01
+.................... 		estouro = 0; 
+003A:  CLRF   28
+.................... 	} 
+.................... } 
+....................  
+....................  
+003B:  BCF    0B.2
+003C:  BCF    0A.3
+003D:  BCF    0A.4
+003E:  GOTO   01B
+.................... #bit LED = PORTD.2 
+....................  
+.................... unsigned int16 t0, duty_cycle = 300; 
+....................  
+.................... void setup() 
+.................... { 
+.................... 	// PERIFÉRICOS // 
+.................... 	TRISC = 0b00000100;	// RC1 como saída e RC2 como entrada 
+003F:  MOVLW  04
+0040:  BSF    03.5
+0041:  MOVWF  07
+.................... 	//TRISD = 0b00000000;	// RD2 como saída (LED) 
+.................... 	//PORTD = 0x00;		// LED começa desligado 
+.................... 	 
+.................... 	// MODOS E TIMERS // 
+.................... 	setup_ccp1(CCP_CAPTURE_RE);	// CCP1 começa capturando a borda de subida 
+0042:  BCF    03.5
+0043:  BSF    2D.2
+0044:  MOVF   2D,W
+0045:  BSF    03.5
+0046:  MOVWF  07
+0047:  BCF    03.5
+0048:  CLRF   17
+0049:  MOVLW  05
+004A:  MOVWF  17
+.................... 	setup_ccp2(CCP_PWM);		// CCP2 no modo PWM 
+004B:  BCF    2D.1
+004C:  MOVF   2D,W
+004D:  BSF    03.5
+004E:  MOVWF  07
+004F:  BCF    03.5
+0050:  BCF    07.1
+0051:  MOVLW  0C
+0052:  MOVWF  1D
+.................... 	 
+.................... 	config_timer0(); 
+.................... 	setup_timer_1(T1_INTERNAL | T1_DIV_BY_4); 
+*
+005A:  MOVLW  A5
+005B:  MOVWF  10
+.................... 	setup_timer_2(T2_DIV_BY_4, 124, 10); 
+005C:  MOVLW  48
+005D:  MOVWF  78
+005E:  IORLW  05
+005F:  MOVWF  12
+0060:  MOVLW  7C
+0061:  BSF    03.5
+0062:  MOVWF  12
+.................... 	set_pwm2_duty(duty_cycle); 
+0063:  BCF    03.5
+0064:  MOVF   2C,W
+0065:  MOVWF  79
+0066:  MOVF   2B,W
+0067:  MOVWF  78
+0068:  RRF    79,F
+0069:  RRF    78,F
+006A:  RRF    79,F
+006B:  RRF    78,F
+006C:  RRF    79,F
+006D:  MOVF   78,W
+006E:  MOVWF  1B
+006F:  RRF    79,F
+0070:  RRF    79,W
+0071:  ANDLW  30
+0072:  MOVWF  77
+0073:  MOVF   1D,W
+0074:  ANDLW  CF
+0075:  IORWF  77,W
+0076:  MOVWF  1D
+0077:  BCF    0A.3
+0078:  BCF    0A.4
+0079:  GOTO   08D (RETURN)
+.................... } 
+....................  
+.................... void main() 
+007A:  CLRF   28
+007B:  MOVLW  01
+007C:  MOVWF  2C
+007D:  MOVLW  2C
+007E:  MOVWF  2B
+007F:  MOVLW  FF
+0080:  MOVWF  2D
+0081:  BSF    03.5
+0082:  BSF    1F.0
+0083:  BSF    1F.1
+0084:  BSF    1F.2
+0085:  BCF    1F.3
+0086:  MOVLW  07
+0087:  MOVWF  1C
+0088:  BCF    03.7
+0089:  MOVLW  1F
+008A:  ANDWF  03,F
+.................... { 
+....................    setup(); 
+008B:  BCF    03.5
+008C:  GOTO   03F
+....................    Pisca_Alerta(); 
+008D:  BSF    0B.2
+....................     
+....................    while(1) 
+....................    { 
+.................... 	   if(CCP1IF == 1) 
+008E:  BTFSS  0C.2
+008F:  GOTO   0C3
+.................... 	   { 
+.................... 		   CCP1IF = 0; 
+0090:  BCF    0C.2
+.................... 		    
+.................... 		   if(input(PIN_C2) == 1) 
+0091:  BSF    2D.2
+0092:  MOVF   2D,W
+0093:  BSF    03.5
+0094:  MOVWF  07
+0095:  BCF    03.5
+0096:  BTFSS  07.2
+0097:  GOTO   0A5
+.................... 		   { 
+.................... 			   setup_ccp1(CCP_CAPTURE_FE); 
+0098:  BSF    2D.2
+0099:  MOVF   2D,W
+009A:  BSF    03.5
+009B:  MOVWF  07
+009C:  BCF    03.5
+009D:  CLRF   17
+009E:  MOVLW  04
+009F:  MOVWF  17
+.................... 			   t0 = CCP_1; 
+00A0:  MOVF   16,W
+00A1:  MOVWF  2A
+00A2:  MOVF   15,W
+00A3:  MOVWF  29
+.................... 		   } 
+00A4:  GOTO   0C3
+.................... 		    
+.................... 		   else 
+.................... 		   { 
+.................... 			   CCP_1 = CCP_1 - t0; 
+00A5:  MOVF   29,W
+00A6:  SUBWF  15,F
+00A7:  MOVF   2A,W
+00A8:  BTFSS  03.0
+00A9:  INCFSZ 2A,W
+00AA:  SUBWF  16,F
+.................... 			    
+.................... 			   if(CCP_1 >= 250) 
+00AB:  MOVF   16,F
+00AC:  BTFSS  03.2
+00AD:  GOTO   0B2
+00AE:  MOVF   15,W
+00AF:  SUBLW  F9
+00B0:  BTFSC  03.0
+00B1:  GOTO   0B7
+.................... 				   output_high(PIN_D2); 
+00B2:  BSF    03.5
+00B3:  BCF    08.2
+00B4:  BCF    03.5
+00B5:  BSF    08.2
+00B6:  GOTO   0BB
+.................... 				    
+.................... 			   else 
+.................... 			   	   output_low(PIN_D2); 
+00B7:  BSF    03.5
+00B8:  BCF    08.2
+00B9:  BCF    03.5
+00BA:  BCF    08.2
+.................... 			   	    
+.................... 			   setup_ccp1(CCP_CAPTURE_RE); 
+00BB:  BSF    2D.2
+00BC:  MOVF   2D,W
+00BD:  BSF    03.5
+00BE:  MOVWF  07
+00BF:  BCF    03.5
+00C0:  CLRF   17
+00C1:  MOVLW  05
+00C2:  MOVWF  17
+.................... 		   } 
+.................... 	   } 
+00C3:  GOTO   08E
+....................    } 
+.................... } 
+00C4:  GOTO   0C4
+
+Configuration Fuses:
+   Word  1: 373B   RC NOWDT NOPUT NOBROWNOUT NOLVP NOCPD NOWRT DEBUG NOPROTECT
+
+   Some fuses have been forced to be compatible with the ICD debugger.

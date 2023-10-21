@@ -1,0 +1,52 @@
+
+ROM used:   97/7936 (1%)
+            97/7936 (1%) including unused fragments
+
+            0.1 Average locations per line
+            6.5 Average locations per statement
+
+RAM used:   13/357 (4%) at main() level
+            13/357 (4%) worst case
+
+Stack used: 1 worst case (0 in main + 1 for interrupts)
+Stack size: 7
+
+Lines Stmts  %   Files
+----- ----- ---  -----
+   68    15 100  codigo.c
+  661     0   0  ..\..\..\..\..\..\..\..\..\..\Program Files (x86)\PICC\devices\16F877A.h
+  374     0   0  registradores16F.h
+----- -----
+ 1103    15 Total
+
+Page ROM  %  RAM   Vol Diff  Functions:
+---- --- --- ---   --- ----  ----------
+0     19  20    0   132  2.2  setup
+0     16  16    0    96  2.9  interrupcao
+0     15  15    0    27  1.0  MAIN
+ Inline         0             @cinit1
+
+Program metrics:
+    Functions               3
+    Statements              15
+    Comments                230
+    Volume (V)              346
+    Difficulty (D)          6.3
+    Effort to implement (E) 2164
+    Time to implement (T)   2 minutes
+    Est Delivered Bugs (B)  0
+    Cyclomatic Complexity   1
+    Maintainability (MI)    162
+
+ Segment     Used  Free
+-----------  ----  ----
+00000-00003     4  0  
+00004-0002E    43  0  
+0002F-007FF    50  1951  
+00800-00FFF     0  2048  
+01000-017FF     0  2048  
+01800-01E7F     0  1664  
+01E80-01EFF     0  128  
+
+
+

@@ -1,0 +1,55 @@
+
+ROM used:   213/7936 (3%)
+            213/7936 (3%) including unused fragments
+
+            0.2 Average locations per line
+            5.0 Average locations per statement
+
+RAM used:   16/357 (4%) at main() level
+            17/357 (5%) worst case
+
+Stack used: 1 worst case (0 in main + 1 for interrupts)
+Stack size: 7
+
+Lines Stmts  %   Files
+----- ----- ---  -----
+  120    35  81  codigo.c
+  661     0   0  ..\..\..\..\..\..\..\..\..\..\Program Files (x86)\PICC\devices\16F877A.h
+  373     0   0  registradores16F.h
+   21     8  19  Pisca_Alerta.h
+----- -----
+ 1175    43 Total
+
+Page ROM  %  RAM   Vol Diff  Functions:
+---- --- --- ---   --- ----  ----------
+ Inline         0    42  1.4  config_timer0
+0     16   8    0   103  2.1  Pisca_Alerta
+0     25  12    0   156  1.8  setup
+0     98  46    1   530  4.8  interrupcao
+0     18   8    0    38  1.2  MAIN
+ Inline         0             @cinit1
+
+Program metrics:
+    Functions               5
+    Statements              43
+    Comments                245
+    Volume (V)              1202
+    Difficulty (D)          12.0
+    Effort to implement (E) 14462
+    Time to implement (T)   13 minutes
+    Est Delivered Bugs (B)  0
+    Cyclomatic Complexity   6
+    Maintainability (MI)    58
+
+ Segment     Used  Free
+-----------  ----  ----
+00000-00003     4  0  
+00004-00037    52  0  
+00038-007FF   157  1835  
+00800-00FFF     0  2048  
+01000-017FF     0  2048  
+01800-01E7F     0  1664  
+01E80-01EFF     0  128  
+
+
+

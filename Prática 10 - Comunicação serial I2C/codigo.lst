@@ -1,0 +1,540 @@
+CCS PCM C Compiler, Version 5.007, 61971               20-ago-23 14:55
+
+               Filename:   C:\Users\edyne\OneDrive\Área de Trabalho\UFPI\Programação\2 - UFPI\6 - Lab de Micro\Prática 10 - Comunicação serial I2C\codigo.lst
+
+               ROM used:   432 words (5%)
+                           Largest free fragment is 2048
+               RAM used:   6 (2%) at main() level
+                           11 (3%) worst case
+               Stack used: 0 locations
+               Stack size: 7
+
+*
+0000:  NOP
+0001:  MOVLW  01
+0002:  MOVWF  0A
+0003:  GOTO   19A
+.................... #include <16F877A.h> 
+.................... //////// Standard Header file for the PIC16F877A device //////////////// 
+.................... #device PIC16F877A 
+....................  
+.................... #list 
+....................  
+.................... #include "registradores16F.h" 
+.................... // DEFS_877  
+.................... //  
+.................... // Standard definitions for PIC16F877  
+.................... //  
+.................... // Copyright, Peter H. Anderson, Baltimore, MD, June, '99  
+....................   
+.................... //#define byte int  
+....................  
+.................... //#byte PORTD = 0x08 
+.................... //#bit INTF = 0xb.1 
+....................  
+.................... /* 
+.................... 	Alterado por Maria Edivânia Neres de Sousa, acadêmica de Engenharia Elétrica na UFPI. 
+.................... 	25/05/2022, Teresina - PI. 
+.................... */ 
+....................  
+.................... #list  
+....................  
+....................  
+.................... #USE delay(clock = 20M) 
+.................... #USE I2C (master, sda = PIN_C4, scl = PIN_C3, fast = 100000) 
+*
+000D:  MOVLW  08
+000E:  MOVWF  78
+000F:  MOVLW  04
+0010:  MOVWF  77
+0011:  DECFSZ 77,F
+0012:  GOTO   011
+0013:  BCF    07.3
+0014:  BCF    20.3
+0015:  MOVF   20,W
+0016:  BSF    03.5
+0017:  MOVWF  07
+0018:  MOVLW  03
+0019:  MOVWF  77
+001A:  DECFSZ 77,F
+001B:  GOTO   01A
+001C:  BCF    03.5
+001D:  RLF    23,F
+001E:  BCF    07.4
+001F:  BTFSS  03.0
+0020:  GOTO   027
+0021:  BSF    20.4
+0022:  MOVF   20,W
+0023:  BSF    03.5
+0024:  MOVWF  07
+0025:  GOTO   02B
+0026:  BCF    03.5
+0027:  BCF    20.4
+0028:  MOVF   20,W
+0029:  BSF    03.5
+002A:  MOVWF  07
+002B:  NOP
+002C:  BCF    03.5
+002D:  BSF    20.3
+002E:  MOVF   20,W
+002F:  BSF    03.5
+0030:  MOVWF  07
+0031:  BCF    03.5
+0032:  BTFSS  07.3
+0033:  GOTO   032
+0034:  DECFSZ 78,F
+0035:  GOTO   00F
+0036:  MOVLW  04
+0037:  MOVWF  77
+0038:  DECFSZ 77,F
+0039:  GOTO   038
+003A:  BCF    07.3
+003B:  BCF    20.3
+003C:  MOVF   20,W
+003D:  BSF    03.5
+003E:  MOVWF  07
+003F:  NOP
+0040:  BCF    03.5
+0041:  BSF    20.4
+0042:  MOVF   20,W
+0043:  BSF    03.5
+0044:  MOVWF  07
+0045:  MOVLW  03
+0046:  MOVWF  77
+0047:  DECFSZ 77,F
+0048:  GOTO   047
+0049:  MOVLW  03
+004A:  MOVWF  77
+004B:  DECFSZ 77,F
+004C:  GOTO   04B
+004D:  BCF    03.5
+004E:  BSF    20.3
+004F:  MOVF   20,W
+0050:  BSF    03.5
+0051:  MOVWF  07
+0052:  BCF    03.5
+0053:  BTFSS  07.3
+0054:  GOTO   053
+0055:  CLRF   78
+0056:  MOVLW  03
+0057:  MOVWF  77
+0058:  DECFSZ 77,F
+0059:  GOTO   058
+005A:  BTFSC  07.4
+005B:  BSF    78.0
+005C:  BCF    07.3
+005D:  BCF    20.3
+005E:  MOVF   20,W
+005F:  BSF    03.5
+0060:  MOVWF  07
+0061:  BCF    03.5
+0062:  BCF    07.4
+0063:  BCF    20.4
+0064:  MOVF   20,W
+0065:  BSF    03.5
+0066:  MOVWF  07
+0067:  BCF    03.5
+0068:  RETURN
+*
+0091:  MOVLW  08
+0092:  MOVWF  24
+0093:  MOVF   77,W
+0094:  MOVWF  25
+0095:  BSF    20.4
+0096:  MOVF   20,W
+0097:  BSF    03.5
+0098:  MOVWF  07
+0099:  MOVLW  03
+009A:  MOVWF  77
+009B:  DECFSZ 77,F
+009C:  GOTO   09B
+009D:  BCF    03.5
+009E:  BSF    20.3
+009F:  MOVF   20,W
+00A0:  BSF    03.5
+00A1:  MOVWF  07
+00A2:  BCF    03.5
+00A3:  BTFSS  07.3
+00A4:  GOTO   0A3
+00A5:  BTFSC  07.4
+00A6:  BSF    03.0
+00A7:  BTFSS  07.4
+00A8:  BCF    03.0
+00A9:  RLF    78,F
+00AA:  MOVLW  04
+00AB:  MOVWF  77
+00AC:  DECFSZ 77,F
+00AD:  GOTO   0AC
+00AE:  BCF    20.3
+00AF:  MOVF   20,W
+00B0:  BSF    03.5
+00B1:  MOVWF  07
+00B2:  BCF    03.5
+00B3:  BCF    07.3
+00B4:  DECFSZ 24,F
+00B5:  GOTO   095
+00B6:  BSF    20.4
+00B7:  MOVF   20,W
+00B8:  BSF    03.5
+00B9:  MOVWF  07
+00BA:  MOVLW  03
+00BB:  MOVWF  77
+00BC:  DECFSZ 77,F
+00BD:  GOTO   0BC
+00BE:  BCF    03.5
+00BF:  BCF    07.4
+00C0:  MOVF   25,W
+00C1:  BTFSC  03.2
+00C2:  GOTO   0C8
+00C3:  BCF    20.4
+00C4:  MOVF   20,W
+00C5:  BSF    03.5
+00C6:  MOVWF  07
+00C7:  BCF    03.5
+00C8:  NOP
+00C9:  BSF    20.3
+00CA:  MOVF   20,W
+00CB:  BSF    03.5
+00CC:  MOVWF  07
+00CD:  BCF    03.5
+00CE:  BTFSS  07.3
+00CF:  GOTO   0CE
+00D0:  MOVLW  04
+00D1:  MOVWF  77
+00D2:  DECFSZ 77,F
+00D3:  GOTO   0D2
+00D4:  BCF    07.3
+00D5:  BCF    20.3
+00D6:  MOVF   20,W
+00D7:  BSF    03.5
+00D8:  MOVWF  07
+00D9:  MOVLW  03
+00DA:  MOVWF  77
+00DB:  DECFSZ 77,F
+00DC:  GOTO   0DB
+00DD:  BCF    03.5
+00DE:  BCF    07.4
+00DF:  BCF    20.4
+00E0:  MOVF   20,W
+00E1:  BSF    03.5
+00E2:  MOVWF  07
+....................  
+.................... void setup() 
+.................... { 
+.................... 	set_tris_d(0b00000000); 
+*
+0004:  MOVLW  00
+0005:  BSF    03.5
+0006:  MOVWF  08
+.................... 	enable_interrupts(GLOBAL); 
+0007:  MOVLW  C0
+0008:  BCF    03.5
+0009:  IORWF  0B,F
+000A:  BCF    0A.3
+000B:  BCF    0A.4
+000C:  GOTO   1A8 (RETURN)
+.................... } 
+....................  
+.................... unsigned int leitura_bot() 
+*
+0069:  CLRF   22
+.................... { 
+.................... 	unsigned int estado_bot = 0; 
+.................... 	 
+.................... 	i2c_start(); 
+006A:  BSF    20.4
+006B:  MOVF   20,W
+006C:  BSF    03.5
+006D:  MOVWF  07
+006E:  MOVLW  04
+006F:  MOVWF  77
+0070:  DECFSZ 77,F
+0071:  GOTO   070
+0072:  BCF    03.5
+0073:  BSF    20.3
+0074:  MOVF   20,W
+0075:  BSF    03.5
+0076:  MOVWF  07
+0077:  MOVLW  03
+0078:  MOVWF  77
+0079:  DECFSZ 77,F
+007A:  GOTO   079
+007B:  BCF    03.5
+007C:  BCF    07.4
+007D:  BCF    20.4
+007E:  MOVF   20,W
+007F:  BSF    03.5
+0080:  MOVWF  07
+0081:  MOVLW  04
+0082:  MOVWF  77
+0083:  DECFSZ 77,F
+0084:  GOTO   083
+0085:  BCF    03.5
+0086:  BCF    07.3
+0087:  BCF    20.3
+0088:  MOVF   20,W
+0089:  BSF    03.5
+008A:  MOVWF  07
+.................... 	i2c_write(0x41);     		// Final 1 para leitura 
+008B:  MOVLW  41
+008C:  BCF    03.5
+008D:  MOVWF  23
+008E:  CALL   00D
+.................... 	estado_bot = i2c_read(); 
+008F:  MOVLW  01
+0090:  MOVWF  77
+*
+00E3:  MOVF   78,W
+00E4:  BCF    03.5
+00E5:  MOVWF  22
+.................... 	i2c_stop(); 
+00E6:  BCF    20.4
+00E7:  MOVF   20,W
+00E8:  BSF    03.5
+00E9:  MOVWF  07
+00EA:  NOP
+00EB:  BCF    03.5
+00EC:  BSF    20.3
+00ED:  MOVF   20,W
+00EE:  BSF    03.5
+00EF:  MOVWF  07
+00F0:  BCF    03.5
+00F1:  BTFSS  07.3
+00F2:  GOTO   0F1
+00F3:  MOVLW  04
+00F4:  MOVWF  77
+00F5:  DECFSZ 77,F
+00F6:  GOTO   0F5
+00F7:  GOTO   0F8
+00F8:  NOP
+00F9:  BSF    20.4
+00FA:  MOVF   20,W
+00FB:  BSF    03.5
+00FC:  MOVWF  07
+00FD:  MOVLW  04
+00FE:  MOVWF  77
+00FF:  DECFSZ 77,F
+0100:  GOTO   0FF
+.................... 	 
+.................... 	if(estado_bot & 0b10000000) 
+0101:  BCF    03.5
+0102:  BTFSS  22.7
+0103:  GOTO   107
+.................... 		estado_bot = 1; 
+0104:  MOVLW  01
+0105:  MOVWF  22
+0106:  GOTO   108
+.................... 		 
+.................... 	else 
+.................... 		estado_bot = 0; 
+0107:  CLRF   22
+.................... 			 
+.................... 	return estado_bot; 
+0108:  MOVF   22,W
+0109:  MOVWF  78
+010A:  BCF    0A.3
+010B:  BCF    0A.4
+010C:  GOTO   1A9 (RETURN)
+.................... } 
+....................  
+.................... void estado_led(unsigned int estado_bot) 
+.................... { 
+.................... 	if(estado_bot == 1) 
+010D:  DECFSZ 22,W
+010E:  GOTO   154
+.................... 	{ 
+.................... 		i2c_start(); 
+010F:  BSF    20.4
+0110:  MOVF   20,W
+0111:  BSF    03.5
+0112:  MOVWF  07
+0113:  MOVLW  04
+0114:  MOVWF  77
+0115:  DECFSZ 77,F
+0116:  GOTO   115
+0117:  BCF    03.5
+0118:  BSF    20.3
+0119:  MOVF   20,W
+011A:  BSF    03.5
+011B:  MOVWF  07
+011C:  MOVLW  03
+011D:  MOVWF  77
+011E:  DECFSZ 77,F
+011F:  GOTO   11E
+0120:  BCF    03.5
+0121:  BCF    07.4
+0122:  BCF    20.4
+0123:  MOVF   20,W
+0124:  BSF    03.5
+0125:  MOVWF  07
+0126:  MOVLW  04
+0127:  MOVWF  77
+0128:  DECFSZ 77,F
+0129:  GOTO   128
+012A:  BCF    03.5
+012B:  BCF    07.3
+012C:  BCF    20.3
+012D:  MOVF   20,W
+012E:  BSF    03.5
+012F:  MOVWF  07
+.................... 		i2c_write(0x40);     	// Final 0 para escrita 
+0130:  MOVLW  40
+0131:  BCF    03.5
+0132:  MOVWF  23
+0133:  CALL   00D
+.................... 		i2c_write(0b00000001);		 
+0134:  MOVLW  01
+0135:  MOVWF  23
+0136:  CALL   00D
+.................... 		i2c_stop(); 
+0137:  BCF    20.4
+0138:  MOVF   20,W
+0139:  BSF    03.5
+013A:  MOVWF  07
+013B:  NOP
+013C:  BCF    03.5
+013D:  BSF    20.3
+013E:  MOVF   20,W
+013F:  BSF    03.5
+0140:  MOVWF  07
+0141:  BCF    03.5
+0142:  BTFSS  07.3
+0143:  GOTO   142
+0144:  MOVLW  04
+0145:  MOVWF  77
+0146:  DECFSZ 77,F
+0147:  GOTO   146
+0148:  GOTO   149
+0149:  NOP
+014A:  BSF    20.4
+014B:  MOVF   20,W
+014C:  BSF    03.5
+014D:  MOVWF  07
+014E:  MOVLW  04
+014F:  MOVWF  77
+0150:  DECFSZ 77,F
+0151:  GOTO   150
+.................... 	} 
+0152:  GOTO   196
+0153:  BCF    03.5
+.................... 	 
+.................... 	else 
+.................... 	{ 
+.................... 		i2c_start(); 
+0154:  BSF    20.4
+0155:  MOVF   20,W
+0156:  BSF    03.5
+0157:  MOVWF  07
+0158:  MOVLW  04
+0159:  MOVWF  77
+015A:  DECFSZ 77,F
+015B:  GOTO   15A
+015C:  BCF    03.5
+015D:  BSF    20.3
+015E:  MOVF   20,W
+015F:  BSF    03.5
+0160:  MOVWF  07
+0161:  MOVLW  03
+0162:  MOVWF  77
+0163:  DECFSZ 77,F
+0164:  GOTO   163
+0165:  BCF    03.5
+0166:  BCF    07.4
+0167:  BCF    20.4
+0168:  MOVF   20,W
+0169:  BSF    03.5
+016A:  MOVWF  07
+016B:  MOVLW  04
+016C:  MOVWF  77
+016D:  DECFSZ 77,F
+016E:  GOTO   16D
+016F:  BCF    03.5
+0170:  BCF    07.3
+0171:  BCF    20.3
+0172:  MOVF   20,W
+0173:  BSF    03.5
+0174:  MOVWF  07
+.................... 		i2c_write(0x40);     	// Final 0 para escrita 
+0175:  MOVLW  40
+0176:  BCF    03.5
+0177:  MOVWF  23
+0178:  CALL   00D
+.................... 		i2c_write(0b00000000);		 
+0179:  CLRF   23
+017A:  CALL   00D
+.................... 		i2c_stop(); 
+017B:  BCF    20.4
+017C:  MOVF   20,W
+017D:  BSF    03.5
+017E:  MOVWF  07
+017F:  NOP
+0180:  BCF    03.5
+0181:  BSF    20.3
+0182:  MOVF   20,W
+0183:  BSF    03.5
+0184:  MOVWF  07
+0185:  BCF    03.5
+0186:  BTFSS  07.3
+0187:  GOTO   186
+0188:  MOVLW  04
+0189:  MOVWF  77
+018A:  DECFSZ 77,F
+018B:  GOTO   18A
+018C:  GOTO   18D
+018D:  NOP
+018E:  BSF    20.4
+018F:  MOVF   20,W
+0190:  BSF    03.5
+0191:  MOVWF  07
+0192:  MOVLW  04
+0193:  MOVWF  77
+0194:  DECFSZ 77,F
+0195:  GOTO   194
+.................... 	} 
+0196:  BCF    03.5
+0197:  BCF    0A.3
+0198:  BCF    0A.4
+0199:  GOTO   1AE (RETURN)
+.................... } 
+....................  
+.................... void main() 
+019A:  MOVLW  FF
+019B:  MOVWF  20
+019C:  BSF    03.5
+019D:  BSF    1F.0
+019E:  BSF    1F.1
+019F:  BSF    1F.2
+01A0:  BCF    1F.3
+01A1:  MOVLW  07
+01A2:  MOVWF  1C
+01A3:  BCF    03.7
+01A4:  MOVLW  1F
+01A5:  ANDWF  03,F
+.................... {	 
+.................... 	setup(); 
+01A6:  BCF    03.5
+01A7:  GOTO   004
+.................... 	 
+.................... 	unsigned int est_bot; 
+.................... 	 
+.................... 	while(1) 
+.................... 	{ 
+.................... 		est_bot = leitura_bot(); 
+01A8:  GOTO   069
+01A9:  MOVF   78,W
+01AA:  MOVWF  21
+.................... 		estado_led(est_bot); 
+01AB:  MOVF   21,W
+01AC:  MOVWF  22
+01AD:  GOTO   10D
+01AE:  GOTO   1A8
+.................... 	} 
+.................... } 
+....................  
+.................... #ORG 0x1E80, 0x1EFF{} 
+01AF:  GOTO   1AF
+
+Configuration Fuses:
+   Word  1: 373B   RC NOWDT NOPUT NOBROWNOUT NOLVP NOCPD NOWRT DEBUG NOPROTECT
+
+   Some fuses have been forced to be compatible with the ICD debugger.

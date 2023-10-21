@@ -1,0 +1,277 @@
+CCS PCM C Compiler, Version 5.007, 61971               25-jul-23 11:13
+
+               Filename:   C:\Users\edyne\OneDrive\Área de Trabalho\UFPI\Programação\2 - UFPI\6 - Lab de Micro\Prática 11 - O sistema de interrupção do PIC\codigo.lst
+
+               ROM used:   152 words (2%)
+                           Largest free fragment is 2048
+               RAM used:   13 (4%) at main() level
+                           13 (4%) worst case
+               Stack used: 1 locations (0 in main + 1 for interrupts)
+               Stack size: 7
+
+*
+0000:  NOP
+0001:  MOVLW  00
+0002:  MOVWF  0A
+0003:  GOTO   089
+0004:  MOVWF  7F
+0005:  SWAPF  03,W
+0006:  CLRF   03
+0007:  MOVWF  21
+0008:  MOVF   0A,W
+0009:  MOVWF  20
+000A:  CLRF   0A
+000B:  MOVF   04,W
+000C:  MOVWF  22
+000D:  MOVF   77,W
+000E:  MOVWF  23
+000F:  MOVF   78,W
+0010:  MOVWF  24
+0011:  MOVF   79,W
+0012:  MOVWF  25
+0013:  MOVF   7A,W
+0014:  MOVWF  26
+0015:  BCF    03.7
+0016:  BCF    03.5
+0017:  BTFSS  0B.4
+0018:  GOTO   01B
+0019:  BTFSC  0B.1
+001A:  GOTO   038
+001B:  MOVLW  8C
+001C:  MOVWF  04
+001D:  BTFSS  00.0
+001E:  GOTO   021
+001F:  BTFSC  0C.0
+0020:  GOTO   03B
+0021:  MOVLW  8C
+0022:  MOVWF  04
+0023:  BTFSS  00.1
+0024:  GOTO   027
+0025:  BTFSC  0C.1
+0026:  GOTO   03E
+0027:  MOVF   22,W
+0028:  MOVWF  04
+0029:  MOVF   23,W
+002A:  MOVWF  77
+002B:  MOVF   24,W
+002C:  MOVWF  78
+002D:  MOVF   25,W
+002E:  MOVWF  79
+002F:  MOVF   26,W
+0030:  MOVWF  7A
+0031:  MOVF   20,W
+0032:  MOVWF  0A
+0033:  SWAPF  21,W
+0034:  MOVWF  03
+0035:  SWAPF  7F,F
+0036:  SWAPF  7F,W
+0037:  RETFIE
+0038:  BCF    0A.3
+0039:  BCF    0A.4
+003A:  GOTO   05E
+003B:  BCF    0A.3
+003C:  BCF    0A.4
+003D:  GOTO   041
+003E:  BCF    0A.3
+003F:  BCF    0A.4
+0040:  GOTO   053
+.................... /* 
+.................... 	LÓGICA:	 
+.................... 		Faça um programa utilizando a interrupção de cada módulo a seguir: 
+.................... 		timer1 >> p/ comutar RD0 a cada 0,5s  
+.................... 		timer2 >> p/ comutar RD1 a cada 0,25s 	 
+.................... 		Externa (RB0/INT) >> p/ comutar RD2 a cada borda de subida no pino RB0  
+.................... 							(habilitar interrupção externa - INTF e INTE) 
+.................... 							(soltar botão a interrupção é ativada) 
+.................... 							(botão -> res. pull-up -> capacitor de 120 em paralelo com o botão) 
+.................... 							ext_int_edge( ) 
+.................... 							enable_interrupts( ) 
+....................  
+.................... 	OBS: zerar todas as flags, ativar PEIE 
+.................... 	 
+.................... 	while(1)   
+.................... 	{ 
+.................... 		// void 
+.................... 	} 
+.................... */ 
+....................  
+.................... #include <16F877a.h> 
+.................... //////// Standard Header file for the PIC16F877A device //////////////// 
+.................... #device PIC16F877A 
+....................  
+.................... #list 
+....................  
+.................... #include "registradores16F.h" 
+.................... // DEFS_877  
+.................... //  
+.................... // Standard definitions for PIC16F877  
+.................... //  
+.................... // Copyright, Peter H. Anderson, Baltimore, MD, June, '99  
+....................   
+.................... //#define byte int  
+....................  
+.................... //#byte PORTD = 0x08 
+.................... //#bit INTF = 0xb.1 
+....................  
+.................... /* 
+.................... 	Alterado por Maria Edivânia Neres de Sousa, acadêmica de Engenharia Elétrica na UFPI. 
+.................... 	25/05/2022, Teresina - PI. 
+.................... */ 
+....................  
+.................... #list  
+....................  
+....................  
+....................  
+.................... unsigned int cont_timer1 = 0; 
+....................  
+.................... void setup() 
+.................... { 
+.................... 	// PERIFÉRICOS // 
+.................... 	set_tris_d(0b00000000); 
+*
+0067:  MOVLW  00
+0068:  BSF    03.5
+0069:  MOVWF  08
+.................... 	set_tris_b(0b00000001); 
+006A:  MOVLW  01
+006B:  MOVWF  06
+.................... 	port_b_pullups(TRUE); 
+006C:  BCF    01.7
+.................... 	 
+.................... 	// TIMERS //  
+.................... 	setup_timer_1(T1_INTERNAL | T1_DIV_BY_8); 
+006D:  MOVLW  B5
+006E:  BCF    03.5
+006F:  MOVWF  10
+.................... 	set_timer1(0); 
+0070:  CLRF   0E
+0071:  CLRF   0F
+0072:  CLRF   0E
+.................... 	// t = 0,2us * 8 * 65535>>> t = 0,104s -> cont = 5 
+.................... 	setup_timer_2(T2_DIV_BY_16, 155, 1); 
+0073:  MOVLW  00
+0074:  MOVWF  78
+0075:  IORLW  06
+0076:  MOVWF  12
+0077:  MOVLW  9B
+0078:  BSF    03.5
+0079:  MOVWF  12
+.................... 	set_timer2(155); 
+007A:  BCF    03.5
+007B:  MOVWF  11
+.................... 	enable_interrupts(GLOBAL); 
+007C:  MOVLW  C0
+007D:  IORWF  0B,F
+.................... 	enable_interrupts(INT_TIMER1); 
+007E:  BSF    03.5
+007F:  BSF    0C.0
+.................... 	enable_interrupts(INT_TIMER2); 
+0080:  BSF    0C.1
+.................... 	enable_interrupts(INT_EXT_L2H);	 
+0081:  BCF    03.5
+0082:  BSF    0B.4
+0083:  BSF    03.5
+0084:  BSF    01.6
+0085:  BCF    03.5
+0086:  BCF    0A.3
+0087:  BCF    0A.4
+0088:  GOTO   096 (RETURN)
+.................... } 
+....................  
+.................... #int_timer1 
+.................... void comutar_RD0() 
+.................... { 
+.................... 	cont_timer1++; 
+*
+0041:  INCF   27,F
+.................... 	set_timer1(0); 
+0042:  CLRF   0E
+0043:  CLRF   0F
+0044:  CLRF   0E
+.................... 	 
+.................... 	if(cont_timer1 == 5) // Se 0,5s... 
+0045:  MOVF   27,W
+0046:  SUBLW  05
+0047:  BTFSS  03.2
+0048:  GOTO   04F
+.................... 	{ 
+.................... 		cont_timer1 = 0; 
+0049:  CLRF   27
+.................... 		output_toggle(PIN_D1); 
+004A:  BSF    03.5
+004B:  BCF    08.1
+004C:  MOVLW  02
+004D:  BCF    03.5
+004E:  XORWF  08,F
+.................... 	} 
+.................... } 
+....................  
+004F:  BCF    0C.0
+0050:  BCF    0A.3
+0051:  BCF    0A.4
+0052:  GOTO   027
+.................... #int_timer2 
+.................... void comutar_RD1() 
+.................... { 
+.................... 	set_timer2(155); 
+0053:  MOVLW  9B
+0054:  MOVWF  11
+.................... 	output_toggle(PIN_D1); 
+0055:  BSF    03.5
+0056:  BCF    08.1
+0057:  MOVLW  02
+0058:  BCF    03.5
+0059:  XORWF  08,F
+.................... } 
+....................  
+005A:  BCF    0C.1
+005B:  BCF    0A.3
+005C:  BCF    0A.4
+005D:  GOTO   027
+.................... #int_ext 
+.................... void comutar_RD2() 
+.................... { 
+.................... 	output_toggle(PIN_D2); 
+005E:  BSF    03.5
+005F:  BCF    08.2
+0060:  MOVLW  04
+0061:  BCF    03.5
+0062:  XORWF  08,F
+0063:  BCF    0B.1
+0064:  BCF    0A.3
+0065:  BCF    0A.4
+0066:  GOTO   027
+.................... } 
+....................  
+.................... void main() 
+*
+0089:  CLRF   27
+008A:  BSF    03.5
+008B:  BSF    1F.0
+008C:  BSF    1F.1
+008D:  BSF    1F.2
+008E:  BCF    1F.3
+008F:  MOVLW  07
+0090:  MOVWF  1C
+0091:  BCF    03.7
+0092:  MOVLW  1F
+0093:  ANDWF  03,F
+.................... { 
+.................... 	setup(); 
+0094:  BCF    03.5
+0095:  GOTO   067
+.................... 	 
+.................... 	while(1) 
+.................... 	{ 
+0096:  GOTO   096
+.................... 	 
+.................... 	} 
+.................... } 
+....................  
+.................... #ORG 0x1E80, 0x1EFF{} 
+0097:  GOTO   097
+
+Configuration Fuses:
+   Word  1: 373B   RC NOWDT NOPUT NOBROWNOUT NOLVP NOCPD NOWRT DEBUG NOPROTECT
+
+   Some fuses have been forced to be compatible with the ICD debugger.

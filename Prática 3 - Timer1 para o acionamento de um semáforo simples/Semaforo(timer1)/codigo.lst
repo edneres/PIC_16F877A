@@ -1,0 +1,400 @@
+CCS PCM C Compiler, Version 5.007, 61971               17-jun-23 22:03
+
+               Filename:   C:\Users\edyne\OneDrive\Área de Trabalho\UFPI\Programação\2 - UFPI\6 - Lab de Micro\Prática 3 - Timer1 para o acionamento de um semáforo simples\Semaforo(timer1)\codigo.lst
+
+               ROM used:   213 words (3%)
+                           Largest free fragment is 2048
+               RAM used:   16 (4%) at main() level
+                           17 (5%) worst case
+               Stack used: 1 locations (0 in main + 1 for interrupts)
+               Stack size: 7
+
+*
+0000:  NOP
+0001:  MOVLW  00
+0002:  MOVWF  0A
+0003:  GOTO   0C3
+0004:  MOVWF  7F
+0005:  SWAPF  03,W
+0006:  CLRF   03
+0007:  MOVWF  21
+0008:  MOVF   0A,W
+0009:  MOVWF  20
+000A:  CLRF   0A
+000B:  MOVF   04,W
+000C:  MOVWF  22
+000D:  MOVF   77,W
+000E:  MOVWF  23
+000F:  MOVF   78,W
+0010:  MOVWF  24
+0011:  MOVF   79,W
+0012:  MOVWF  25
+0013:  MOVF   7A,W
+0014:  MOVWF  26
+0015:  BCF    03.7
+0016:  BCF    03.5
+0017:  MOVLW  8C
+0018:  MOVWF  04
+0019:  BTFSS  00.0
+001A:  GOTO   01D
+001B:  BTFSC  0C.0
+001C:  GOTO   032
+001D:  BTFSS  0B.5
+001E:  GOTO   021
+001F:  BTFSC  0B.2
+0020:  GOTO   035
+0021:  MOVF   22,W
+0022:  MOVWF  04
+0023:  MOVF   23,W
+0024:  MOVWF  77
+0025:  MOVF   24,W
+0026:  MOVWF  78
+0027:  MOVF   25,W
+0028:  MOVWF  79
+0029:  MOVF   26,W
+002A:  MOVWF  7A
+002B:  MOVF   20,W
+002C:  MOVWF  0A
+002D:  SWAPF  21,W
+002E:  MOVWF  03
+002F:  SWAPF  7F,F
+0030:  SWAPF  7F,W
+0031:  RETFIE
+0032:  BCF    0A.3
+0033:  BCF    0A.4
+0034:  GOTO   048
+0035:  BCF    0A.3
+0036:  BCF    0A.4
+0037:  GOTO   038
+.................... /* 
+.................... 	LED Vermelho: 3s	(RD7) 
+.................... 	LED Amarelo:  0,5s	(RD6) 
+.................... 	LED Verde:    1s	(RD5) 
+.................... 	Botão:			    (RB0) 
+.................... 	 
+.................... 	SEQUÊNCIA = G, Y, R 
+.................... 	 
+.................... 	  Ao pressionar o botão 'p' (RD0 - pull up ativado) e se 
+.................... 	estiver no LED Verde (RD5), vai saltar a sequência acima 
+.................... 	p/ acionar o LED Vermelho (RD7) imediatamente. 
+.................... 	 
+.................... 	OBS: usar a biblioteca criada p/ piscar o LED no pino RD1. 
+.................... */ 
+....................  
+.................... #include <16F877A.h> 
+.................... //////// Standard Header file for the PIC16F877A device //////////////// 
+.................... #device PIC16F877A 
+....................  
+.................... #list 
+....................  
+.................... #include "registradores16F.h" 
+.................... // DEFS_877  
+.................... //  
+.................... // Standard definitions for PIC16F877  
+.................... //  
+.................... // Copyright, Peter H. Anderson, Baltimore, MD, June, '99  
+....................   
+.................... //#define byte int  
+....................  
+.................... //#byte PORTD = 0x08 
+.................... //#bit INTF = 0xb.1 
+....................  
+.................... /* 
+.................... 	Alterado por Maria Edivânia Neres de Sousa, acadêmica de Engenharia Elétrica na UFPI. 
+.................... 	25/05/2022, Teresina - PI. 
+.................... */ 
+....................  
+.................... #list  
+....................  
+....................  
+.................... #include "Pisca_Alerta.h" 
+.................... void config_timer0() 
+.................... { 
+.................... 	setup_timer_0(RTCC_INTERNAL|RTCC_DIV_256); 
+*
+00B0:  MOVF   01,W
+00B1:  ANDLW  C0
+00B2:  IORLW  07
+00B3:  MOVWF  01
+.................... 	enable_interrupts(INT_TIMER0); 
+00B4:  BCF    03.5
+00B5:  BSF    0B.5
+.................... } 
+....................  
+.................... int estouro = 0; 
+....................  
+.................... #int_timer0 
+.................... void Pisca_Alerta() 
+.................... {	 
+.................... 	estouro++; 
+*
+0038:  INCF   28,F
+.................... 	 
+.................... 	if(estouro == 8) 
+0039:  MOVF   28,W
+003A:  SUBLW  08
+003B:  BTFSS  03.2
+003C:  GOTO   044
+.................... 	{ 
+.................... 		output_toggle(PIN_D1); 
+003D:  BSF    03.5
+003E:  BCF    08.1
+003F:  MOVLW  02
+0040:  BCF    03.5
+0041:  XORWF  08,F
+.................... 		set_timer0(0); 
+0042:  CLRF   01
+.................... 		estouro = 0; 
+0043:  CLRF   28
+.................... 	} 
+.................... } 
+....................  
+....................  
+.................... #define LED_VERMELHO PIN_D7 
+.................... #define LED_AMARELO  PIN_D6 
+.................... #define LED_VERDE    PIN_D5 
+0044:  BCF    0B.2
+0045:  BCF    0A.3
+0046:  BCF    0A.4
+0047:  GOTO   021
+.................... #define Botao		 PIN_B0 
+....................  
+.................... unsigned int16 contador = 0;  // Contador para controlar os tempos dos LEDs 
+....................  
+.................... void setup() 
+.................... { 
+....................    // Periféricos 
+....................    set_tris_d(0b00000000);  // Define RD7, RD6, RD5 como saída 
+*
+00AA:  MOVLW  00
+00AB:  BSF    03.5
+00AC:  MOVWF  08
+....................    set_tris_b(0b00000001);  // Define RB0 como entrada 
+00AD:  MOVLW  01
+00AE:  MOVWF  06
+....................    port_b_pullups(TRUE); 	// Botão ativado em nível lógico 0 
+00AF:  BCF    01.7
+....................     
+....................    config_timer0(); 
+....................     
+....................    // Configura o Timer 1 no modo temporizador 
+....................    setup_timer_1(T1_INTERNAL | T1_DIV_BY_8); 
+*
+00B6:  MOVLW  B5
+00B7:  MOVWF  10
+....................     
+....................    // Habilita a interrupção do Timer 1 
+....................    enable_interrupts(INT_TIMER1); 
+00B8:  BSF    03.5
+00B9:  BSF    0C.0
+....................    enable_interrupts(GLOBAL); 
+00BA:  MOVLW  C0
+00BB:  BCF    03.5
+00BC:  IORWF  0B,F
+....................     
+....................    // Inicia o Timer 1 
+....................    set_timer1(0); 
+00BD:  CLRF   0E
+00BE:  CLRF   0F
+00BF:  CLRF   0E
+00C0:  BCF    0A.3
+00C1:  BCF    0A.4
+00C2:  GOTO   0D2 (RETURN)
+.................... } 
+....................  
+.................... #int_timer1 
+.................... void interrupcao() 
+.................... { 
+....................    set_timer1(0); 
+*
+0048:  CLRF   0E
+0049:  CLRF   0F
+004A:  CLRF   0E
+....................    contador++; 
+004B:  INCF   29,F
+004C:  BTFSC  03.2
+004D:  INCF   2A,F
+....................     
+....................    // LED Verde por 1 segundo 
+....................    if (contador <= 10)  // 1 / 0,104 
+004E:  MOVF   2A,F
+004F:  BTFSS  03.2
+0050:  GOTO   069
+0051:  MOVF   29,W
+0052:  SUBLW  0A
+0053:  BTFSS  03.0
+0054:  GOTO   069
+....................    { 
+....................       output_low(LED_VERMELHO);    // Apaga o LED vermelho 
+0055:  BSF    03.5
+0056:  BCF    08.7
+0057:  BCF    03.5
+0058:  BCF    08.7
+....................       output_low(LED_AMARELO);     // Apaga o LED amarelo 
+0059:  BSF    03.5
+005A:  BCF    08.6
+005B:  BCF    03.5
+005C:  BCF    08.6
+....................       output_high(LED_VERDE);      // Acende o LED verde 
+005D:  BSF    03.5
+005E:  BCF    08.5
+005F:  BCF    03.5
+0060:  BSF    08.5
+....................        
+....................       if(input(Botao) == 0) 
+0061:  BSF    03.5
+0062:  BSF    06.0
+0063:  BCF    03.5
+0064:  BTFSC  06.0
+0065:  GOTO   069
+....................       { 
+....................       	contador = 15; 
+0066:  CLRF   2A
+0067:  MOVLW  0F
+0068:  MOVWF  29
+....................       } 
+....................    } 
+....................     
+....................    // LED Amarelo por 0,5 segundos 
+....................    if (contador <= 14 && contador > 10) // 1,5 / 0,104 
+0069:  MOVF   2A,F
+006A:  BTFSS  03.2
+006B:  GOTO   083
+006C:  MOVF   29,W
+006D:  SUBLW  0E
+006E:  BTFSS  03.0
+006F:  GOTO   083
+0070:  MOVF   2A,F
+0071:  BTFSS  03.2
+0072:  GOTO   077
+0073:  MOVF   29,W
+0074:  SUBLW  0A
+0075:  BTFSC  03.0
+0076:  GOTO   083
+....................    { 
+....................       output_low(LED_VERMELHO);    // Apaga o LED vermelho 
+0077:  BSF    03.5
+0078:  BCF    08.7
+0079:  BCF    03.5
+007A:  BCF    08.7
+....................       output_high(LED_AMARELO);    // Acende o LED amarelo 
+007B:  BSF    03.5
+007C:  BCF    08.6
+007D:  BCF    03.5
+007E:  BSF    08.6
+....................       output_low(LED_VERDE);       // Apaga o LED verde 
+007F:  BSF    03.5
+0080:  BCF    08.5
+0081:  BCF    03.5
+0082:  BCF    08.5
+....................    } 
+....................     
+....................    // LED Vermelho por 3 segundos 
+....................    if (contador <= 43 && contador > 14) // 4,5 / 0,104 
+0083:  MOVF   2A,F
+0084:  BTFSS  03.2
+0085:  GOTO   09D
+0086:  MOVF   29,W
+0087:  SUBLW  2B
+0088:  BTFSS  03.0
+0089:  GOTO   09D
+008A:  MOVF   2A,F
+008B:  BTFSS  03.2
+008C:  GOTO   091
+008D:  MOVF   29,W
+008E:  SUBLW  0E
+008F:  BTFSC  03.0
+0090:  GOTO   09D
+....................    { 
+....................       output_high(LED_VERMELHO);   // Acende o LED vermelho 
+0091:  BSF    03.5
+0092:  BCF    08.7
+0093:  BCF    03.5
+0094:  BSF    08.7
+....................       output_low(LED_AMARELO);     // Apaga o LED amarelo 
+0095:  BSF    03.5
+0096:  BCF    08.6
+0097:  BCF    03.5
+0098:  BCF    08.6
+....................       output_low(LED_VERDE);       // Apaga o LED verde 
+0099:  BSF    03.5
+009A:  BCF    08.5
+009B:  BCF    03.5
+009C:  BCF    08.5
+....................    } 
+....................     
+....................     
+....................    // Reinicia o contador para retornar ao LED Verde 
+....................    if (contador > 43) 
+009D:  MOVF   2A,F
+009E:  BTFSS  03.2
+009F:  GOTO   0A4
+00A0:  MOVF   29,W
+00A1:  SUBLW  2B
+00A2:  BTFSC  03.0
+00A3:  GOTO   0A6
+....................    { 
+....................       contador = 0; 
+00A4:  CLRF   2A
+00A5:  CLRF   29
+....................    } 
+00A6:  BCF    0C.0
+00A7:  BCF    0A.3
+00A8:  BCF    0A.4
+00A9:  GOTO   021
+.................... } 
+....................  
+.................... void main() 
+*
+00C3:  CLRF   28
+00C4:  CLRF   2A
+00C5:  CLRF   29
+00C6:  BSF    03.5
+00C7:  BSF    1F.0
+00C8:  BSF    1F.1
+00C9:  BSF    1F.2
+00CA:  BCF    1F.3
+00CB:  MOVLW  07
+00CC:  MOVWF  1C
+00CD:  BCF    03.7
+00CE:  MOVLW  1F
+00CF:  ANDWF  03,F
+.................... { 
+....................    setup(); 
+00D0:  BCF    03.5
+00D1:  GOTO   0AA
+....................    Pisca_Alerta(); 
+00D2:  BSF    0B.2
+....................     
+....................    while(1) 
+....................    { 
+00D3:  GOTO   0D3
+....................       // O código dentro da função de interrupção (timer1_isr) será executado a cada interrupção do Timer 1 
+....................    } 
+.................... } 
+....................  
+....................  
+.................... #ORG 0x1E80, 0x1EFF{} 
+....................  
+00D4:  GOTO   0D4
+.................... // CÓDIGO OK NA PRÁTICA  
+....................  
+.................... /* 
+.................... 						CÁLCULOS 
+.................... 				 
+.................... 	>> O Timer 1 é um temporizador de 16 bits, o que significa que pode contar até  
+.................... 	o valor máximo de 65535 (0xFFFF) antes de ocorrer um estouro (overflow).  
+.................... 	 
+.................... 	O valor inicial do Timer é definido pelos registradores TMR1H e TMR1L 
+.................... 	>> O período de cada contagem do Timer 1 usando a fórmula: 
+.................... 		t = ciclo de máquina * prescaler * contagem(65536 - TMR1H:TMR1L); 
+....................     	ciclo de máquina = 4 / Fosc; >>> ciclo de máquina = 0,2us 
+.................... 	    
+.................... 	    t = 0,2us * 1 * 65536 >>> t = 0,0131s 
+.................... 	    t = 0,2us * 8 * 65536 >>> t = 0,104s 
+.................... */ 
+
+Configuration Fuses:
+   Word  1: 373B   RC NOWDT NOPUT NOBROWNOUT NOLVP NOCPD NOWRT DEBUG NOPROTECT
+
+   Some fuses have been forced to be compatible with the ICD debugger.

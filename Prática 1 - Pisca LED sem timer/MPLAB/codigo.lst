@@ -1,0 +1,92 @@
+CCS PCM C Compiler, Version 5.007, 61971               19-ago-23 23:38
+
+               Filename:   C:\Users\edyne\OneDrive\Área de Trabalho\UFPI\Programação\2 - UFPI\6 - Lab de Micro\Prática 1 - Pisca LED sem timer\MPLAB\codigo.lst
+
+               ROM used:   51 words (1%)
+                           Largest free fragment is 2048
+               RAM used:   6 (2%) at main() level
+                           7 (2%) worst case
+               Stack used: 0 locations
+               Stack size: 7
+
+*
+0000:  NOP
+0001:  MOVLW  00
+0002:  MOVWF  0A
+0003:  GOTO   01A
+.................... #include <16F877a.h> 
+.................... //////// Standard Header file for the PIC16F877A device //////////////// 
+.................... #device PIC16F877A 
+....................  
+.................... #list 
+....................  
+.................... #use delay(clock = 20000000) 
+0004:  MOVLW  22
+0005:  MOVWF  04
+0006:  BCF    03.7
+0007:  MOVF   00,W
+0008:  BTFSC  03.2
+0009:  GOTO   017
+000A:  MOVLW  06
+000B:  MOVWF  78
+000C:  CLRF   77
+000D:  DECFSZ 77,F
+000E:  GOTO   00D
+000F:  DECFSZ 78,F
+0010:  GOTO   00C
+0011:  MOVLW  7B
+0012:  MOVWF  77
+0013:  DECFSZ 77,F
+0014:  GOTO   013
+0015:  DECFSZ 00,F
+0016:  GOTO   00A
+0017:  BCF    0A.3
+0018:  BCF    0A.4
+0019:  GOTO   02E (RETURN)
+....................  
+.................... #define LED PIN_D1 
+....................  
+.................... void main() 
+001A:  BSF    03.5
+001B:  BSF    1F.0
+001C:  BSF    1F.1
+001D:  BSF    1F.2
+001E:  BCF    1F.3
+001F:  MOVLW  07
+0020:  MOVWF  1C
+0021:  BCF    03.7
+0022:  MOVLW  1F
+0023:  ANDWF  03,F
+.................... { 
+.................... 	set_tris_d(0b00000000);		// Configura todos os pinos do PORTD como saída 
+0024:  MOVLW  00
+0025:  MOVWF  08
+.................... 	 
+.................... 	while(1) 
+.................... 	{ 
+.................... 		output_toggle(LED); 
+0026:  BCF    08.1
+0027:  MOVLW  02
+0028:  BCF    03.5
+0029:  XORWF  08,F
+.................... 		delay_ms(500); 
+002A:  MOVWF  21
+002B:  MOVLW  FA
+002C:  MOVWF  22
+002D:  GOTO   004
+002E:  DECFSZ 21,F
+002F:  GOTO   02B
+0030:  BSF    03.5
+0031:  GOTO   026
+.................... 	}	 
+.................... } 
+....................  
+.................... #ORG 0x1E80, 0x1EFF{} // Reservar (DEU CERTO) (7808 - 7934) ~= (7808 - 8191) 
+....................  
+0032:  GOTO   032
+.................... // CÓDIGO OK NA PRÁTICA // 
+
+Configuration Fuses:
+   Word  1: 373B   RC NOWDT NOPUT NOBROWNOUT NOLVP NOCPD NOWRT DEBUG NOPROTECT
+
+   Some fuses have been forced to be compatible with the ICD debugger.

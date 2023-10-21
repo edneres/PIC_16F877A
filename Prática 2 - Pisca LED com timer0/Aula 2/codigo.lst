@@ -1,0 +1,208 @@
+CCS PCM C Compiler, Version 5.007, 61971               11-jun-23 16:12
+
+               Filename:   C:\Users\edyne\OneDrive\Área de Trabalho\UFPI\Programação\2 - UFPI\6 - Lab de Micro\Prática 2 - Pisca LED com timer0\Aula 2\codigo.lst
+
+               ROM used:   97 words (1%)
+                           Largest free fragment is 2048
+               RAM used:   13 (4%) at main() level
+                           13 (4%) worst case
+               Stack used: 1 locations (0 in main + 1 for interrupts)
+               Stack size: 7
+
+*
+0000:  NOP
+0001:  MOVLW  00
+0002:  MOVWF  0A
+0003:  GOTO   052
+0004:  MOVWF  7F
+0005:  SWAPF  03,W
+0006:  CLRF   03
+0007:  MOVWF  21
+0008:  MOVF   0A,W
+0009:  MOVWF  20
+000A:  CLRF   0A
+000B:  MOVF   04,W
+000C:  MOVWF  22
+000D:  MOVF   77,W
+000E:  MOVWF  23
+000F:  MOVF   78,W
+0010:  MOVWF  24
+0011:  MOVF   79,W
+0012:  MOVWF  25
+0013:  MOVF   7A,W
+0014:  MOVWF  26
+0015:  BCF    03.7
+0016:  BCF    03.5
+0017:  BTFSS  0B.5
+0018:  GOTO   01B
+0019:  BTFSC  0B.2
+001A:  GOTO   02C
+001B:  MOVF   22,W
+001C:  MOVWF  04
+001D:  MOVF   23,W
+001E:  MOVWF  77
+001F:  MOVF   24,W
+0020:  MOVWF  78
+0021:  MOVF   25,W
+0022:  MOVWF  79
+0023:  MOVF   26,W
+0024:  MOVWF  7A
+0025:  MOVF   20,W
+0026:  MOVWF  0A
+0027:  SWAPF  21,W
+0028:  MOVWF  03
+0029:  SWAPF  7F,F
+002A:  SWAPF  7F,W
+002B:  RETFIE
+002C:  BCF    0A.3
+002D:  BCF    0A.4
+002E:  GOTO   02F
+.................... /* 
+.................... 	Piscar LED a cada 100ms usando timer0 
+.................... 				23/05/23 
+.................... */ 
+....................  
+.................... #include <16F877A.h> 
+.................... //////// Standard Header file for the PIC16F877A device //////////////// 
+.................... #device PIC16F877A 
+....................  
+.................... #list 
+....................  
+.................... #include "registradores16F.h" 
+.................... // DEFS_877  
+.................... //  
+.................... // Standard definitions for PIC16F877  
+.................... //  
+.................... // Copyright, Peter H. Anderson, Baltimore, MD, June, '99  
+....................   
+.................... //#define byte int  
+....................  
+.................... //#byte PORTD = 0x08 
+.................... //#bit INTF = 0xb.1 
+....................  
+.................... /* 
+.................... 	Alterado por Maria Edivânia Neres de Sousa, acadêmica de Engenharia Elétrica na UFPI. 
+.................... 	25/05/2022, Teresina - PI. 
+.................... */ 
+....................  
+.................... #list  
+....................  
+....................  
+....................  
+.................... #define LED PIN_D1	// ok 
+.................... int cont = 0; 
+....................  
+.................... void setup() 
+.................... { 
+.................... 	// TIMER0 // 
+.................... 	setup_timer_0(RTCC_INTERNAL | RTCC_DIV_256 | RTCC_8_BIT);	// Cristal  interno, prescaler de 256 
+*
+003F:  BSF    03.5
+0040:  MOVF   01,W
+0041:  ANDLW  C0
+0042:  IORLW  07
+0043:  MOVWF  01
+.................... 	//set_timer0(0);								// TMR0 começa em 0 
+.................... 	TMR0 = 0; 
+0044:  BCF    03.5
+0045:  CLRF   01
+.................... 	enable_interrupts(INT_TIMER0); 					// Habilita a interrupção do TIMER0 
+0046:  BSF    0B.5
+.................... 	enable_interrupts(GLOBAL);						// Habilita as interrupções globais 
+0047:  MOVLW  C0
+0048:  IORWF  0B,F
+.................... 	 
+.................... 	// PERIFÉRICOS // 
+.................... 	set_tris_d(0b00000000); 
+0049:  MOVLW  00
+004A:  BSF    03.5
+004B:  MOVWF  08
+.................... 	output_high(LED); 
+004C:  BCF    08.1
+004D:  BCF    03.5
+004E:  BSF    08.1
+004F:  BCF    0A.3
+0050:  BCF    0A.4
+0051:  GOTO   05F (RETURN)
+.................... } 
+....................  
+.................... ///////////////////////////////////////// 
+.................... // Rotina para a interrupção do TIMER0 // 
+.................... ///////////////////////////////////////// 
+.................... #int_timer0 
+.................... void interrupcao()  
+.................... { 
+.................... 	TMR0 = 0; 
+*
+002F:  CLRF   01
+.................... 	cont++; 
+0030:  INCF   27,F
+.................... 	 
+.................... 	if(cont == 8) 
+0031:  MOVF   27,W
+0032:  SUBLW  08
+0033:  BTFSS  03.2
+0034:  GOTO   03B
+.................... 	{ 
+.................... 		cont = 0; 
+0035:  CLRF   27
+.................... 		 
+.................... 		output_toggle(LED); 
+0036:  BSF    03.5
+0037:  BCF    08.1
+0038:  MOVLW  02
+0039:  BCF    03.5
+003A:  XORWF  08,F
+.................... 	} 
+003B:  BCF    0B.2
+003C:  BCF    0A.3
+003D:  BCF    0A.4
+003E:  GOTO   01B
+.................... } 
+....................  
+.................... void main() 
+*
+0052:  CLRF   27
+0053:  BSF    03.5
+0054:  BSF    1F.0
+0055:  BSF    1F.1
+0056:  BSF    1F.2
+0057:  BCF    1F.3
+0058:  MOVLW  07
+0059:  MOVWF  1C
+005A:  BCF    03.7
+005B:  MOVLW  1F
+005C:  ANDWF  03,F
+.................... { 
+.................... 	setup();	 
+005D:  BCF    03.5
+005E:  GOTO   03F
+.................... 	 
+.................... 	while(1) 
+.................... 	{ 
+005F:  GOTO   05F
+.................... 		 
+.................... 	} 
+.................... } 
+....................  
+.................... #ORG 0x1E80, 0x1EFF{} 
+....................  
+0060:  GOTO   060
+.................... // CÓDIGO OK NA PRÁTICA // 
+....................  
+.................... /* 
+.................... 				CÁLCULOS 
+.................... 				 
+.................... 	>> Ciclo de Máquina (CM) = 0,2us 
+.................... 	>> t = CM * Prescaler * (256 - TMR0) 
+.................... 	   > t = 0,0000002s * 256 * 256 = 0,0131s 
+.................... 	   > 0,1/0,0131 ~= 7,63 
+.................... 	    
+.................... 	>> Logo: para um tempo de 100ms são necessários 
+.................... 	8 estouros do TIMER0. 
+.................... */ 
+
+Configuration Fuses:
+   Word  1: 373B   RC NOWDT NOPUT NOBROWNOUT NOLVP NOCPD NOWRT DEBUG NOPROTECT
+
+   Some fuses have been forced to be compatible with the ICD debugger.

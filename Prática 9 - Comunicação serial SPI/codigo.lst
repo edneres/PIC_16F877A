@@ -1,0 +1,219 @@
+CCS PCM C Compiler, Version 5.007, 61971               20-ago-23 15:19
+
+               Filename:   C:\Users\edyne\OneDrive\Área de Trabalho\UFPI\Programação\2 - UFPI\6 - Lab de Micro\Prática 9 - Comunicação serial SPI\codigo.lst
+
+               ROM used:   150 words (2%)
+                           Largest free fragment is 2048
+               RAM used:   16 (4%) at main() level
+                           17 (5%) worst case
+               Stack used: 1 locations (0 in main + 1 for interrupts)
+               Stack size: 7
+
+*
+0000:  NOP
+0001:  MOVLW  00
+0002:  MOVWF  0A
+0003:  GOTO   048
+0004:  MOVWF  7F
+0005:  SWAPF  03,W
+0006:  CLRF   03
+0007:  MOVWF  21
+0008:  MOVF   0A,W
+0009:  MOVWF  20
+000A:  CLRF   0A
+000B:  MOVF   04,W
+000C:  MOVWF  22
+000D:  MOVF   77,W
+000E:  MOVWF  23
+000F:  MOVF   78,W
+0010:  MOVWF  24
+0011:  MOVF   79,W
+0012:  MOVWF  25
+0013:  MOVF   7A,W
+0014:  MOVWF  26
+0015:  BCF    03.7
+0016:  BCF    03.5
+0017:  MOVLW  8C
+0018:  MOVWF  04
+0019:  BTFSS  00.3
+001A:  GOTO   01D
+001B:  BTFSC  0C.3
+001C:  GOTO   02E
+001D:  MOVF   22,W
+001E:  MOVWF  04
+001F:  MOVF   23,W
+0020:  MOVWF  77
+0021:  MOVF   24,W
+0022:  MOVWF  78
+0023:  MOVF   25,W
+0024:  MOVWF  79
+0025:  MOVF   26,W
+0026:  MOVWF  7A
+0027:  MOVF   20,W
+0028:  MOVWF  0A
+0029:  SWAPF  21,W
+002A:  MOVWF  03
+002B:  SWAPF  7F,F
+002C:  SWAPF  7F,W
+002D:  RETFIE
+002E:  BCF    0A.3
+002F:  BCF    0A.4
+0030:  GOTO   031
+.................... #include <16f877a.h> 
+.................... //////// Standard Header file for the PIC16F877A device //////////////// 
+.................... #device PIC16F877A 
+....................  
+.................... #list 
+....................  
+.................... #bit TMR1IF = 0x0C.0 
+....................  
+.................... unsigned int8 cont = 0, cont1 = 0; 
+....................  
+.................... #INT_SSP 
+.................... void leitura_completa() 
+.................... { 
+.................... 	output_high(PIN_C2); 
+0031:  BCF    29.2
+0032:  MOVF   29,W
+0033:  BSF    03.5
+0034:  MOVWF  07
+0035:  BCF    03.5
+0036:  BSF    07.2
+.................... 	 
+.................... 	for(int i=0; i < 250;i++); 
+0037:  CLRF   2B
+0038:  MOVF   2B,W
+0039:  SUBLW  F9
+003A:  BTFSS  03.0
+003B:  GOTO   03E
+003C:  INCF   2B,F
+003D:  GOTO   038
+.................... 	 
+.................... 	output_low(PIN_C2); 
+003E:  BCF    29.2
+003F:  MOVF   29,W
+0040:  BSF    03.5
+0041:  MOVWF  07
+0042:  BCF    03.5
+0043:  BCF    07.2
+0044:  BCF    0C.3
+0045:  BCF    0A.3
+0046:  BCF    0A.4
+0047:  GOTO   01D
+.................... } 
+....................  
+.................... void main() 
+0048:  CLRF   27
+0049:  CLRF   28
+004A:  MOVLW  FF
+004B:  MOVWF  29
+004C:  BSF    03.5
+004D:  BSF    1F.0
+004E:  BSF    1F.1
+004F:  BSF    1F.2
+0050:  BCF    1F.3
+0051:  MOVLW  07
+0052:  MOVWF  1C
+0053:  BCF    03.7
+0054:  MOVLW  1F
+0055:  ANDWF  03,F
+.................... { 
+.................... 	ENABLE_INTERRUPTS(GLOBAL); 
+0056:  MOVLW  C0
+0057:  BCF    03.5
+0058:  IORWF  0B,F
+.................... 	ENABLE_INTERRUPTS(INT_SSP); 
+0059:  BSF    03.5
+005A:  BSF    0C.3
+.................... 	 
+.................... 	set_tris_c(0x00); 
+005B:  MOVLW  00
+005C:  MOVWF  07
+005D:  BCF    03.5
+005E:  MOVWF  29
+.................... 	setup_spi(SPI_MASTER|SPI_L_TO_H|SPI_CLK_DIV_64); 
+005F:  BCF    14.5
+0060:  BCF    29.5
+0061:  MOVF   29,W
+0062:  BSF    03.5
+0063:  MOVWF  07
+0064:  BCF    03.5
+0065:  BSF    29.4
+0066:  MOVF   29,W
+0067:  BSF    03.5
+0068:  MOVWF  07
+0069:  BCF    03.5
+006A:  BCF    29.3
+006B:  MOVF   29,W
+006C:  BSF    03.5
+006D:  MOVWF  07
+006E:  MOVLW  22
+006F:  BCF    03.5
+0070:  MOVWF  14
+0071:  MOVLW  00
+0072:  BSF    03.5
+0073:  MOVWF  14
+.................... 	setup_timer_1(T1_INTERNAL | T1_DIV_BY_8); 
+0074:  MOVLW  B5
+0075:  BCF    03.5
+0076:  MOVWF  10
+.................... 	set_timer1(0); 
+0077:  CLRF   0E
+0078:  CLRF   0F
+0079:  CLRF   0E
+.................... 	output_low(PIN_C2); 
+007A:  BCF    29.2
+007B:  MOVF   29,W
+007C:  BSF    03.5
+007D:  MOVWF  07
+007E:  BCF    03.5
+007F:  BCF    07.2
+.................... 	 
+.................... 	 
+.................... 	while(1) 
+.................... 	{ 
+.................... 		if (TMR1IF == 1) 
+0080:  BTFSS  0C.0
+0081:  GOTO   087
+.................... 		{ 
+.................... 			cont1++; 
+0082:  INCF   28,F
+.................... 			TMR1IF = 0; 
+0083:  BCF    0C.0
+.................... 			set_timer1(0); 
+0084:  CLRF   0E
+0085:  CLRF   0F
+0086:  CLRF   0E
+.................... 		} 
+.................... 		 
+.................... 		if (cont1 == 10) 
+0087:  MOVF   28,W
+0088:  SUBLW  0A
+0089:  BTFSS  03.2
+008A:  GOTO   08D
+.................... 		{ 
+.................... 			cont++; 
+008B:  INCF   27,F
+.................... 			cont1 = 0; 
+008C:  CLRF   28
+.................... 		} 
+.................... 		 
+.................... 		SPI_WRITE(cont); 
+008D:  MOVF   27,W
+008E:  MOVWF  13
+008F:  BSF    03.5
+0090:  RRF    14,W
+0091:  BTFSS  03.0
+0092:  GOTO   090
+0093:  BCF    03.5
+0094:  GOTO   080
+.................... 	} 
+.................... } 
+....................  
+.................... #ORG 0x1E80, 0x1EFF{} 
+0095:  GOTO   095
+
+Configuration Fuses:
+   Word  1: 373B   RC NOWDT NOPUT NOBROWNOUT NOLVP NOCPD NOWRT DEBUG NOPROTECT
+
+   Some fuses have been forced to be compatible with the ICD debugger.

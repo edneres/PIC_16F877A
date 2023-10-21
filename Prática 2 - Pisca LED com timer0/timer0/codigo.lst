@@ -1,0 +1,249 @@
+CCS PCM C Compiler, Version 5.007, 61971               17-jun-23 21:37
+
+               Filename:   C:\Users\edyne\OneDrive\Área de Trabalho\UFPI\Programação\2 - UFPI\6 - Lab de Micro\Prática 2 - Pisca LED com timer0\timer0\codigo.lst
+
+               ROM used:   120 words (2%)
+                           Largest free fragment is 2048
+               RAM used:   13 (4%) at main() level
+                           14 (4%) worst case
+               Stack used: 1 locations (0 in main + 1 for interrupts)
+               Stack size: 7
+
+*
+0000:  NOP
+0001:  MOVLW  00
+0002:  MOVWF  0A
+0003:  GOTO   069
+0004:  MOVWF  7F
+0005:  SWAPF  03,W
+0006:  CLRF   03
+0007:  MOVWF  21
+0008:  MOVF   0A,W
+0009:  MOVWF  20
+000A:  CLRF   0A
+000B:  MOVF   04,W
+000C:  MOVWF  22
+000D:  MOVF   77,W
+000E:  MOVWF  23
+000F:  MOVF   78,W
+0010:  MOVWF  24
+0011:  MOVF   79,W
+0012:  MOVWF  25
+0013:  MOVF   7A,W
+0014:  MOVWF  26
+0015:  BCF    03.7
+0016:  BCF    03.5
+0017:  BTFSS  0B.5
+0018:  GOTO   01B
+0019:  BTFSC  0B.2
+001A:  GOTO   02C
+001B:  MOVF   22,W
+001C:  MOVWF  04
+001D:  MOVF   23,W
+001E:  MOVWF  77
+001F:  MOVF   24,W
+0020:  MOVWF  78
+0021:  MOVF   25,W
+0022:  MOVWF  79
+0023:  MOVF   26,W
+0024:  MOVWF  7A
+0025:  MOVF   20,W
+0026:  MOVWF  0A
+0027:  SWAPF  21,W
+0028:  MOVWF  03
+0029:  SWAPF  7F,F
+002A:  SWAPF  7F,W
+002B:  RETFIE
+002C:  BCF    0A.3
+002D:  BCF    0A.4
+002E:  GOTO   02F
+.................... /* 
+.................... 	Se o botão não estiver pressionado, LED pisca a cada 100ms. 
+.................... 	Se o botão estiver pressionado, o LED fica apagado. 
+.................... */ 
+....................  
+.................... #include <16F877A.h> 
+.................... //////// Standard Header file for the PIC16F877A device //////////////// 
+.................... #device PIC16F877A 
+....................  
+.................... #list 
+....................  
+.................... #include "registradores16F.h" 
+.................... // DEFS_877  
+.................... //  
+.................... // Standard definitions for PIC16F877  
+.................... //  
+.................... // Copyright, Peter H. Anderson, Baltimore, MD, June, '99  
+....................   
+.................... //#define byte int  
+....................  
+.................... //#byte PORTD = 0x08 
+.................... //#bit INTF = 0xb.1 
+....................  
+.................... /* 
+.................... 	Alterado por Maria Edivânia Neres de Sousa, acadêmica de Engenharia Elétrica na UFPI. 
+.................... 	25/05/2022, Teresina - PI. 
+.................... */ 
+....................  
+.................... #list  
+....................  
+....................  
+....................  
+.................... #define botao PIN_B0 
+.................... #define LED	  PIN_D2 
+....................  
+.................... int cont = 0; 
+....................  
+.................... void setup() 
+.................... { 
+.................... 	// Botão // 
+.................... 	TRISB = 0b00000001; 
+*
+0052:  MOVLW  01
+0053:  BSF    03.5
+0054:  MOVWF  06
+.................... 	PORTB = 0b00000001;		// Botão inicia desativado 
+0055:  BCF    03.5
+0056:  MOVWF  06
+.................... 	port_b_pullups(TRUE); 	// Botão ativado em nível lógico 0 
+0057:  BSF    03.5
+0058:  BCF    01.7
+.................... 	 
+.................... 	// LED // 
+.................... 	TRISD = 0b00000000; 
+0059:  CLRF   08
+.................... 	PORTD = 0b00000000; 
+005A:  BCF    03.5
+005B:  CLRF   08
+.................... 	 
+.................... 	// Timer0 // 
+.................... 	setup_timer_0(RTCC_INTERNAL | RTCC_DIV_256); 
+005C:  BSF    03.5
+005D:  MOVF   01,W
+005E:  ANDLW  C0
+005F:  IORLW  07
+0060:  MOVWF  01
+.................... 	set_timer0(0); 
+0061:  BCF    03.5
+0062:  CLRF   01
+.................... 	enable_interrupts(GLOBAL); 
+0063:  MOVLW  C0
+0064:  IORWF  0B,F
+.................... 	enable_interrupts(INT_TIMER0); 
+0065:  BSF    0B.5
+0066:  BCF    0A.3
+0067:  BCF    0A.4
+0068:  GOTO   076 (RETURN)
+....................  
+.................... 	/* 
+.................... 	OPTION_REG = 0b000000111;	// ... Prescaler de 256 
+.................... 	GIE		   = 1;				// Habilita Interrupção Global 
+.................... 	PEIE	   = 1;				// Habilita Interrupção dos Periféricos 
+.................... 	TMR0IE	   = 1;				// Habilita Interrupção do Timer0	 
+.................... 	TMR0       = 0;		 
+.................... 	*/ 
+.................... } 
+....................  
+.................... #int_timer0 
+.................... void interrupcao() 
+.................... { 
+.................... 	//TMR0IF = 0; 
+.................... 	cont++; 
+*
+002F:  INCF   27,F
+.................... 	set_timer0(0); 
+0030:  CLRF   01
+.................... 			 
+.................... 	if(cont == 8) // 8 ~= 7,69 
+0031:  MOVF   27,W
+0032:  SUBLW  08
+0033:  BTFSS  03.2
+0034:  GOTO   045
+.................... 	{ 
+.................... 		cont = 0; 
+0035:  CLRF   27
+.................... 		 
+.................... 		if(input(botao) == 0) 
+0036:  BSF    03.5
+0037:  BSF    06.0
+0038:  BCF    03.5
+0039:  BTFSC  06.0
+003A:  GOTO   040
+.................... 			output_low(LED); 
+003B:  BSF    03.5
+003C:  BCF    08.2
+003D:  BCF    03.5
+003E:  BCF    08.2
+003F:  GOTO   045
+.................... 					 
+.................... 		else 
+.................... 			output_toggle(LED); 
+0040:  BSF    03.5
+0041:  BCF    08.2
+0042:  MOVLW  04
+0043:  BCF    03.5
+0044:  XORWF  08,F
+.................... 	} 
+.................... 	 
+.................... 	if(input(botao) == 0) 
+0045:  BSF    03.5
+0046:  BSF    06.0
+0047:  BCF    03.5
+0048:  BTFSC  06.0
+0049:  GOTO   04E
+.................... 			output_low(LED);	 
+004A:  BSF    03.5
+004B:  BCF    08.2
+004C:  BCF    03.5
+004D:  BCF    08.2
+004E:  BCF    0B.2
+004F:  BCF    0A.3
+0050:  BCF    0A.4
+0051:  GOTO   01B
+.................... } 
+....................  
+.................... void main() 
+*
+0069:  CLRF   27
+006A:  BSF    03.5
+006B:  BSF    1F.0
+006C:  BSF    1F.1
+006D:  BSF    1F.2
+006E:  BCF    1F.3
+006F:  MOVLW  07
+0070:  MOVWF  1C
+0071:  BCF    03.7
+0072:  MOVLW  1F
+0073:  ANDWF  03,F
+.................... { 
+.................... 	setup();	 
+0074:  BCF    03.5
+0075:  GOTO   052
+.................... 	 
+.................... 	while(1) 
+.................... 	{ 
+0076:  GOTO   076
+.................... 			 
+.................... 	} 
+.................... } 
+....................  
+.................... #ORG 0x1E80, 0x1EFF{} // Reservar 
+....................  
+0077:  GOTO   077
+.................... // CÓDIGO OK NA PRÁTICA // 
+....................  
+.................... /* 
+.................... 				CÁLCULOS 
+.................... 				 
+.................... 	>> Ciclo de Máquina = 0,2us (não vai mudar ao londo da matéria) 
+.................... 	>> t = 0,2*10^-6 * prescaler * (prescaler - TMR0) 
+.................... 	   > t = 0,2*10^-6 * 256 * (256 - 0) ~= 0,013 
+.................... 	   > 0,1/0,013 ~= 7,69 
+.................... 	    
+.................... 	>> Logo: cont == 8  
+.................... */ 
+
+Configuration Fuses:
+   Word  1: 373B   RC NOWDT NOPUT NOBROWNOUT NOLVP NOCPD NOWRT DEBUG NOPROTECT
+
+   Some fuses have been forced to be compatible with the ICD debugger.

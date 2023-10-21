@@ -1,0 +1,6 @@
+>>> Warning 203 "codigo.c" Line 155(1,1): Condition always TRUE
+>>> Warning 204 "codigo.c" Line 157(1,1): Condition always FALSE   tmr0_flag
+*** Error 12 "codigo.c" Line 157(11,20): Undefined identifier
+*** Error 12 "codigo.c" Line 159(10,19): Undefined identifier   tmr0_flag
+      2 Errors,  2 Warnings.
+Build Failed.

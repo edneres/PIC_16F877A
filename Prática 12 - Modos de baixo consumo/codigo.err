@@ -1,0 +1,5 @@
+>>> Warning 203 "codigo.c" Line 26(1,1): Condition always TRUE
+>>> Warning 202 "codigo.c" Line 3(14,25): Variable never used:   cont_timer1
+      Memory usage:   ROM=1%      RAM=4% - 4%
+      0 Errors,  2 Warnings.
+Build Successful.

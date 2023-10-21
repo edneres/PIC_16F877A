@@ -1,0 +1,63 @@
+004-005 @READ_PROGRAM_MEMORY8.P1
+004-005 @WRITE_PROGRAM_MEMORY8.P2
+008     PSP_DATA
+00C.0   CCP1IF
+015     CCP_1_LOW
+015     CCP_1
+016     CCP_1_HIGH
+01B     CCP_2
+01B     CCP_2_LOW
+01C     CCP_2_HIGH
+020-021 t0
+022-023 duty_cycle
+024     @TRIS_C
+025     MAIN.@SCRATCH1
+077     @SCRATCH
+078     @SCRATCH
+078     _RETURN_
+079     @SCRATCH
+07A     @SCRATCH
+09C.6   C1OUT
+09C.7   C2OUT
+10D-10E @WRITE_PROGRAM_MEMORY8.P1
+10D-10E @READ_PROGRAM_MEMORY8.P2
+
+ROM Allocation:
+000004  setup
+00003F  MAIN
+00003F  @cinit1
+00004B  @cinit2
+
+Project Directory:
+    C:\Users\edyne\OneDrive\Área de Trabalho\UFPI\Programação\2 - UFPI\6 - Lab de Micro\Prática 7 - Módulos CCP no modo de captura e comparação\
+
+Project Files:
+    codigo.c                                                [21-ago-23 23:24  CRC=4CEB039C]
+    ..\..\..\..\..\..\..\..\..\Program Files (x86)\PICC\devices\16F877A.h [21-jun-13 16:04  CRC=4E65664C]
+
+Source signature=E9B5D034
+
+Units:
+    codigo (main)
+
+Compiler Settings:
+    Processor:      PIC16F877A
+    Pointer Size:   16
+    ADC Range:      0-255
+    Opt Level:      9
+    Short,Int,Long: UNSIGNED: 1,8,16
+    Float,Double:   32,32
+    ICD Provisions: Yes
+    Predefined symbols:
+       #define __DEBUG 1
+       #define __16F877A TRUE
+
+Output Files:
+    Errors:      codigo.err
+    INHX8:       codigo.hex
+    Symbols:     codigo.sym
+    List:        codigo.lst
+    Debug/COFF:  codigo.cof
+    Project:     codigo.ccspjt
+    Call Tree:   codigo.tre
+    Statistics:  codigo.STA

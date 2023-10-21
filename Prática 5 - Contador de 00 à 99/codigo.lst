@@ -1,0 +1,410 @@
+CCS PCM C Compiler, Version 5.007, 61971               22-jun-23 14:45
+
+               Filename:   C:\Users\edyne\OneDrive\Área de Trabalho\UFPI\Programação\2 - UFPI\6 - Lab de Micro\Prática 5\codigo.lst
+
+               ROM used:   218 words (3%)
+                           Largest free fragment is 2048
+               RAM used:   19 (5%) at main() level
+                           22 (6%) worst case
+               Stack used: 1 locations (0 in main + 1 for interrupts)
+               Stack size: 7
+
+*
+0000:  NOP
+0001:  MOVLW  00
+0002:  MOVWF  0A
+0003:  GOTO   096
+0004:  MOVWF  7F
+0005:  SWAPF  03,W
+0006:  CLRF   03
+0007:  MOVWF  21
+0008:  MOVF   0A,W
+0009:  MOVWF  20
+000A:  CLRF   0A
+000B:  MOVF   04,W
+000C:  MOVWF  22
+000D:  MOVF   77,W
+000E:  MOVWF  23
+000F:  MOVF   78,W
+0010:  MOVWF  24
+0011:  MOVF   79,W
+0012:  MOVWF  25
+0013:  MOVF   7A,W
+0014:  MOVWF  26
+0015:  BCF    03.7
+0016:  BCF    03.5
+0017:  BTFSS  0B.5
+0018:  GOTO   01B
+0019:  BTFSC  0B.2
+001A:  GOTO   02C
+001B:  MOVF   22,W
+001C:  MOVWF  04
+001D:  MOVF   23,W
+001E:  MOVWF  77
+001F:  MOVF   24,W
+0020:  MOVWF  78
+0021:  MOVF   25,W
+0022:  MOVWF  79
+0023:  MOVF   26,W
+0024:  MOVWF  7A
+0025:  MOVF   20,W
+0026:  MOVWF  0A
+0027:  SWAPF  21,W
+0028:  MOVWF  03
+0029:  SWAPF  7F,F
+002A:  SWAPF  7F,W
+002B:  RETFIE
+002C:  BCF    0A.3
+002D:  BCF    0A.4
+002E:  GOTO   03D
+.................... #include <16F877A.h> 
+.................... //////// Standard Header file for the PIC16F877A device //////////////// 
+.................... #device PIC16F877A 
+002F:  BCF    0A.0
+0030:  BCF    0A.1
+0031:  BCF    0A.2
+0032:  ADDWF  02,F
+0033:  RETLW  3F
+0034:  RETLW  06
+0035:  RETLW  5B
+0036:  RETLW  4F
+0037:  RETLW  66
+0038:  RETLW  6D
+0039:  RETLW  7D
+003A:  RETLW  07
+003B:  RETLW  7F
+003C:  RETLW  6F
+*
+006D:  MOVF   2F,W
+006E:  CLRF   78
+006F:  SUBWF  2E,W
+0070:  BTFSC  03.0
+0071:  GOTO   075
+0072:  MOVF   2E,W
+0073:  MOVWF  77
+0074:  GOTO   081
+0075:  CLRF   77
+0076:  MOVLW  08
+0077:  MOVWF  30
+0078:  RLF    2E,F
+0079:  RLF    77,F
+007A:  MOVF   2F,W
+007B:  SUBWF  77,W
+007C:  BTFSC  03.0
+007D:  MOVWF  77
+007E:  RLF    78,F
+007F:  DECFSZ 30,F
+0080:  GOTO   078
+0081:  RETURN
+....................  
+.................... #list 
+....................  
+.................... #include "Pisca_Alerta.h" 
+.................... void config_timer0() 
+.................... { 
+.................... 	setup_timer_0(RTCC_INTERNAL|RTCC_DIV_256); 
+*
+0063:  BSF    03.5
+0064:  MOVF   01,W
+0065:  ANDLW  C0
+0066:  IORLW  07
+0067:  MOVWF  01
+.................... 	enable_interrupts(INT_TIMER0); 
+0068:  BCF    03.5
+0069:  BSF    0B.5
+.................... } 
+....................  
+.................... int estouro = 0; 
+....................  
+.................... #int_timer0 
+.................... void Pisca_Alerta() 
+.................... {	 
+.................... 	estouro++; 
+*
+003D:  INCF   28,F
+.................... 	 
+.................... 	if(estouro == 8) 
+003E:  MOVF   28,W
+003F:  SUBLW  08
+0040:  BTFSS  03.2
+0041:  GOTO   049
+.................... 	{ 
+.................... 		output_toggle(PIN_D1); 
+0042:  BSF    03.5
+0043:  BCF    08.1
+0044:  MOVLW  02
+0045:  BCF    03.5
+0046:  XORWF  08,F
+.................... 		set_timer0(0); 
+0047:  CLRF   01
+.................... 		estouro = 0; 
+0048:  CLRF   28
+.................... 	} 
+.................... } 
+....................  
+.................... #include "registradores16F.h" 
+.................... // DEFS_877  
+.................... //  
+.................... // Standard definitions for PIC16F877  
+.................... //  
+.................... // Copyright, Peter H. Anderson, Baltimore, MD, June, '99  
+....................   
+.................... //#define byte int  
+....................  
+.................... //#byte PORTD = 0x08 
+.................... //#bit INTF = 0xb.1 
+....................  
+.................... /* 
+.................... 	Alterado por Maria Edivânia Neres de Sousa, acadêmica de Engenharia Elétrica na UFPI. 
+.................... 	25/05/2022, Teresina - PI. 
+.................... */ 
+....................  
+.................... #list  
+....................  
+....................  
+.................... //#byte PORTD = 0x08 
+....................  
+.................... //#define Incremento PIN_C0 // Não precisa, pois com o botão, a onda é gerada automaticamente, "estourando" o timer1 
+.................... #bit transistor_unid = PORTD.2	// Display 1 
+.................... #bit transistor_dez	 = PORTD.3	// Display 2 
+....................  
+.................... unsigned int8 contagem; 
+.................... unsigned int8 unidade;  
+.................... unsigned int8 dezena;  
+.................... unsigned int8 delay;  
+....................  
+.................... void setup() 
+.................... { 
+.................... 	// Periféricos // 
+.................... 	set_tris_b(0x00);	// RB0 à RB7 para o display 
+004D:  MOVLW  00
+004E:  BSF    03.5
+004F:  MOVWF  06
+.................... 	set_tris_c(0xFF);	// RC0 para o Botão de Incremento  
+0050:  MOVLW  FF
+0051:  MOVWF  07
+0052:  BCF    03.5
+0053:  MOVWF  2D
+.................... 	setup_timer_1(T1_EXTERNAL_SYNC | T1_DIV_BY_1);	// RC0 como fonte do clock  
+0054:  MOVLW  83
+0055:  MOVWF  10
+.................... 	port_b_pullups(TRUE);	 
+0056:  BSF    03.5
+0057:  BCF    01.7
+.................... 	set_tris_d(0x00);		// Transistores como saída 
+0058:  MOVLW  00
+0059:  MOVWF  08
+.................... 	//PORTD = 0b00000000; // Displays começam desligados 
+.................... 	 
+.................... 	/* 
+....................     // Timer 1 no modo contador com prescaler 1:1 e interrupções habilitadas // 
+....................     setup_timer_1(T1_EXTERNAL_SYNC | T1_DIV_BY_1); 
+.................... 	port_b_pullups(TRUE); 
+.................... 	*/ 
+.................... 	 
+.................... 	enable_interrupts(GLOBAL); 
+005A:  MOVLW  C0
+005B:  BCF    03.5
+005C:  IORWF  0B,F
+.................... 	enable_interrupts(INT_TIMER1); 
+005D:  BSF    03.5
+005E:  BSF    0C.0
+.................... 	set_timer1(0); 
+005F:  BCF    03.5
+0060:  CLRF   0E
+0061:  CLRF   0F
+0062:  CLRF   0E
+....................      
+....................     config_timer0(); 
+*
+006A:  BCF    0A.3
+006B:  BCF    0A.4
+006C:  GOTO   0A5 (RETURN)
+.................... } 
+....................  
+.................... void display(unsigned int8 num) 
+.................... { 
+....................    // Tabela de segmentos para exibir os dígitos de 0 à 9 
+....................    					                  //  Pgfedcba 
+....................    const unsigned int8 segmentos[10] = {0b00111111,  // 0 
+....................                                         0b00000110,  // 1 
+....................                                         0b01011011,  // 2 
+....................                                         0b01001111,  // 3 
+....................                                         0b01100110,  // 4 
+....................                                         0b01101101,  // 5 
+....................                                         0b01111101,  // 6 
+....................                                         0b00000111,  // 7 
+....................                                         0b01111111,  // 8 
+....................                                         0b01101111}; // 9 
+.................... 		 
+.................... 	PORTB = segmentos[num]; 
+*
+0082:  MOVF   2E,W
+0083:  CALL   02F
+0084:  MOVWF  78
+0085:  MOVWF  06
+0086:  RETURN
+.................... } 
+....................  
+.................... void ms_delay(unsigned int8 tempo) 
+.................... { 
+.................... 	unsigned int8 i, j; 
+.................... 	 
+.................... 	for(i = 0; i < tempo; i++); 
+0087:  CLRF   2F
+0088:  MOVF   2E,W
+0089:  SUBWF  2F,W
+008A:  BTFSC  03.0
+008B:  GOTO   08E
+008C:  INCF   2F,F
+008D:  GOTO   088
+.................... 	for(j = 0; j < 254; j++); 
+008E:  CLRF   30
+008F:  MOVF   30,W
+0090:  SUBLW  FD
+0091:  BTFSS  03.0
+0092:  GOTO   095
+0093:  INCF   30,F
+0094:  GOTO   08F
+0095:  RETURN
+.................... } 
+....................  
+....................  
+.................... void main() 
+0096:  CLRF   28
+0097:  MOVLW  FF
+0098:  MOVWF  2D
+0099:  BSF    03.5
+009A:  BSF    1F.0
+009B:  BSF    1F.1
+009C:  BSF    1F.2
+009D:  BCF    1F.3
+009E:  MOVLW  07
+009F:  MOVWF  1C
+00A0:  BCF    03.7
+00A1:  MOVLW  1F
+00A2:  ANDWF  03,F
+.................... {   
+.................... 	setup(); 
+00A3:  BCF    03.5
+00A4:  GOTO   04D
+.................... 	Pisca_Alerta(); 
+00A5:  BSF    0B.2
+.................... 	 
+.................... 	/*	 
+....................     while (1)	// Funcional na PRÁTICA! 
+....................     {  		 
+.................... 		for(dezena = 0; dezena < 10; dezena++) 
+.................... 		{ 
+.................... 			for(unidade = 0; unidade < 10; unidade++) 
+.................... 			{ 
+.................... 				for(delay = 0; delay < 200; delay++)  // Tempo razoável de ciclo de máquina 
+.................... 				{ 
+.................... 					transistor_unid = 1; 
+.................... 					//PORTD = 0b00000100; 
+.................... 					display(unidade); 
+.................... 					ms_delay(10); 
+.................... 					//PORTD = 0b00000000; 
+.................... 					transistor_unid = 0; 
+.................... 					 
+.................... 					transistor_dez = 1; 
+.................... 					//PORTD = 0b00001000; 
+.................... 					display(dezena); 
+.................... 					ms_delay(10); 
+.................... 					//PORTD = 0b00000000; 
+.................... 					transistor_dez = 0; 
+.................... 				} 
+.................... 			} 
+.................... 		} 
+.................... 	} 
+.................... 	*/ 
+.................... 	 
+.................... 	while(1) 
+.................... 	{ 
+.................... 		contagem = get_timer1(); 
+00A6:  MOVF   0F,W
+00A7:  MOVWF  7A
+00A8:  MOVF   0E,W
+00A9:  MOVWF  77
+00AA:  MOVF   0F,W
+00AB:  SUBWF  7A,W
+00AC:  BTFSS  03.2
+00AD:  GOTO   0A6
+00AE:  MOVF   77,W
+00AF:  MOVWF  29
+.................... 		 
+.................... 		if(contagem == 100) 
+00B0:  MOVF   29,W
+00B1:  SUBLW  64
+00B2:  BTFSS  03.2
+00B3:  GOTO   0B7
+.................... 		{ 
+.................... 			set_timer1(0); 
+00B4:  CLRF   0E
+00B5:  CLRF   0F
+00B6:  CLRF   0E
+.................... 			// contagem = 0; 
+.................... 		} 
+.................... 		 
+.................... 		unidade = contagem%10; 
+00B7:  MOVF   29,W
+00B8:  MOVWF  2E
+00B9:  MOVLW  0A
+00BA:  MOVWF  2F
+00BB:  CALL   06D
+00BC:  MOVF   77,W
+00BD:  MOVWF  2A
+.................... 		dezena  = contagem/10; 
+00BE:  MOVF   29,W
+00BF:  MOVWF  2E
+00C0:  MOVLW  0A
+00C1:  MOVWF  2F
+00C2:  CALL   06D
+00C3:  MOVF   78,W
+00C4:  MOVWF  2B
+.................... 		 
+.................... 		transistor_unid = 1; 
+00C5:  BSF    08.2
+.................... 		//PORTD = 0b00000100; 
+.................... 		display(unidade); 
+00C6:  MOVF   2A,W
+00C7:  MOVWF  2E
+00C8:  CALL   082
+.................... 		ms_delay(10); 
+00C9:  MOVLW  0A
+00CA:  MOVWF  2E
+00CB:  CALL   087
+.................... 		//PORTD = 0b00000000; 
+.................... 		transistor_unid = 0; 
+00CC:  BCF    08.2
+.................... 		 
+.................... 		ms_delay(20); 
+00CD:  MOVLW  14
+00CE:  MOVWF  2E
+00CF:  CALL   087
+.................... 					 
+.................... 		transistor_dez = 1; 
+00D0:  BSF    08.3
+.................... 		//PORTD = 0b00001000; 
+.................... 		display(dezena); 
+00D1:  MOVF   2B,W
+00D2:  MOVWF  2E
+00D3:  CALL   082
+.................... 		ms_delay(10); 
+00D4:  MOVLW  0A
+00D5:  MOVWF  2E
+00D6:  CALL   087
+.................... 		//PORTD = 0b00000000; 
+.................... 		transistor_dez = 0; 
+00D7:  BCF    08.3
+00D8:  GOTO   0A6
+.................... 	} 
+.................... } 
+....................  
+.................... #ORG 0x1E80, 0x1EFF{} 
+00D9:  GOTO   0D9
+
+Configuration Fuses:
+   Word  1: 373B   RC NOWDT NOPUT NOBROWNOUT NOLVP NOCPD NOWRT DEBUG NOPROTECT
+
+   Some fuses have been forced to be compatible with the ICD debugger.

@@ -1,0 +1,145 @@
+CCS PCM C Compiler, Version 5.007, 61971               21-ago-23 23:28
+
+               Filename:   C:\Users\edyne\OneDrive\Área de Trabalho\UFPI\Programação\2 - UFPI\6 - Lab de Micro\Prática 12 - Modos de baixo consumo\codigo.lst
+
+               ROM used:   88 words (1%)
+                           Largest free fragment is 2048
+               RAM used:   13 (4%) at main() level
+                           13 (4%) worst case
+               Stack used: 1 locations (0 in main + 1 for interrupts)
+               Stack size: 7
+
+*
+0000:  NOP
+0001:  MOVLW  00
+0002:  MOVWF  0A
+0003:  GOTO   048
+0004:  MOVWF  7F
+0005:  SWAPF  03,W
+0006:  CLRF   03
+0007:  MOVWF  21
+0008:  MOVF   0A,W
+0009:  MOVWF  20
+000A:  CLRF   0A
+000B:  MOVF   04,W
+000C:  MOVWF  22
+000D:  MOVF   77,W
+000E:  MOVWF  23
+000F:  MOVF   78,W
+0010:  MOVWF  24
+0011:  MOVF   79,W
+0012:  MOVWF  25
+0013:  MOVF   7A,W
+0014:  MOVWF  26
+0015:  BCF    03.7
+0016:  BCF    03.5
+0017:  BTFSS  0B.4
+0018:  GOTO   01B
+0019:  BTFSC  0B.1
+001A:  GOTO   02C
+001B:  MOVF   22,W
+001C:  MOVWF  04
+001D:  MOVF   23,W
+001E:  MOVWF  77
+001F:  MOVF   24,W
+0020:  MOVWF  78
+0021:  MOVF   25,W
+0022:  MOVWF  79
+0023:  MOVF   26,W
+0024:  MOVWF  7A
+0025:  MOVF   20,W
+0026:  MOVWF  0A
+0027:  SWAPF  21,W
+0028:  MOVWF  03
+0029:  SWAPF  7F,F
+002A:  SWAPF  7F,W
+002B:  RETFIE
+002C:  BCF    0A.3
+002D:  BCF    0A.4
+002E:  GOTO   02F
+.................... #include <16F877A.h> 
+.................... //////// Standard Header file for the PIC16F877A device //////////////// 
+.................... #device PIC16F877A 
+....................  
+.................... #list 
+....................  
+....................  
+.................... unsigned int cont_timer1 = 0; 
+....................  
+.................... void setup() 
+.................... { 
+.................... 	// PERIFÉRICOS // 
+.................... 	set_tris_d(0b00000000); 
+*
+0038:  MOVLW  00
+0039:  BSF    03.5
+003A:  MOVWF  08
+.................... 	set_tris_b(0b00000001); 
+003B:  MOVLW  01
+003C:  MOVWF  06
+.................... 	port_b_pullups(TRUE); 
+003D:  BCF    01.7
+....................  
+.................... 	enable_interrupts(GLOBAL); 
+003E:  MOVLW  C0
+003F:  BCF    03.5
+0040:  IORWF  0B,F
+.................... 	enable_interrupts(INT_EXT_L2H);	 
+0041:  BSF    0B.4
+0042:  BSF    03.5
+0043:  BSF    01.6
+0044:  BCF    03.5
+0045:  BCF    0A.3
+0046:  BCF    0A.4
+0047:  GOTO   055 (RETURN)
+.................... } 
+....................  
+.................... #int_ext 
+.................... void comutar_RD2() 
+.................... { 
+.................... 	output_toggle(PIN_D2); 
+*
+002F:  BSF    03.5
+0030:  BCF    08.2
+0031:  MOVLW  04
+0032:  BCF    03.5
+0033:  XORWF  08,F
+0034:  BCF    0B.1
+0035:  BCF    0A.3
+0036:  BCF    0A.4
+0037:  GOTO   01B
+.................... } 
+....................  
+.................... void main() 
+*
+0048:  CLRF   27
+0049:  BSF    03.5
+004A:  BSF    1F.0
+004B:  BSF    1F.1
+004C:  BSF    1F.2
+004D:  BCF    1F.3
+004E:  MOVLW  07
+004F:  MOVWF  1C
+0050:  BCF    03.7
+0051:  MOVLW  1F
+0052:  ANDWF  03,F
+.................... { 
+.................... 	setup(); 
+0053:  BCF    03.5
+0054:  GOTO   038
+.................... 	 
+.................... 	while(1) 
+.................... 	{ 
+.................... 		sleep(); 
+0055:  SLEEP
+0056:  GOTO   055
+.................... 	} 
+.................... } 
+....................  
+.................... #ORG 0x1E80, 0x1EFF{} 
+0057:  GOTO   057
+
+Configuration Fuses:
+   Word  1: 373B   RC NOWDT NOPUT NOBROWNOUT NOLVP NOCPD NOWRT DEBUG NOPROTECT
+
+   Some fuses have been forced to be compatible with the ICD debugger.
